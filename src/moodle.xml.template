@@ -79,24 +79,12 @@
     <SECTIONS>
       {% for section in course.sections %}
         <SECTION>
-          <ID>section.id</ID>
-          <NUMBER>section.number</NUMBER>
-          <SUMMARY/>
-          <VISIBLE>1</VISIBLE>
+          <ID>{{ section.id}}</ID>
+          <NUMBER>{{ section.number }}</NUMBER>
+          <SUMMARY>{{ section.summary|escape }}</SUMMARY>
+          <VISIBLE>{{ section.visible }}</VISIBLE>
         </SECTION>
       {% endfor %}
-      <SECTION>
-        <ID>1</ID>
-        <NUMBER>0</NUMBER>
-        <SUMMARY/>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>2</ID>
-        <NUMBER>1</NUMBER>
-        <SUMMARY/>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
     </SECTIONS>
     <GRADEBOOK>
     </GRADEBOOK>

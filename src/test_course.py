@@ -10,9 +10,10 @@ class TestCourse(object):
         for n in xrange(4):
             section = {}
 
-            section.id = n + 1
-            section.number = n
-            section.visible = 1
+            section['number'] = n
+            section['summary'] = '<h2>Test Section #%s</h2>' % (n + 1)
+            section['visible'] = 1
+            section['id'] = abs(hash((section['number'], section['summary'])))
 
             self.sections.append(section)
 
@@ -20,7 +21,7 @@ class FullTestCourse(TestCourse):
     def __init__(self):
         methods = [m for m in dir(self.__class__) if not m.startswith('__')]
 
-        [getattr(self, method) for method in methods]
+        [getattr(self, method)() for method in methods]
 
 course = FullTestCourse()
 
