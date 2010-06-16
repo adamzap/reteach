@@ -77,6 +77,14 @@
     <BLOCKS>
     </BLOCKS>
     <SECTIONS>
+      {% for section in course.sections %}
+        <SECTION>
+          <ID>section.id</ID>
+          <NUMBER>section.number</NUMBER>
+          <SUMMARY/>
+          <VISIBLE>1</VISIBLE>
+        </SECTION>
+      {% endfor %}
       <SECTION>
         <ID>1</ID>
         <NUMBER>0</NUMBER>
