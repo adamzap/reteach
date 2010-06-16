@@ -7,23 +7,10 @@
     <BACKUP_VERSION>2009111300</BACKUP_VERSION>
     <BACKUP_RELEASE>1.9.7</BACKUP_RELEASE>
     <DATE>1276222321</DATE>
-    <ORIGINAL_WWWROOT>http://192.168.0.106/moodle</ORIGINAL_WWWROOT>
-    <ORIGINAL_SITE_IDENTIFIER_HASH>8442618147be73a64af20dde3dc2cc79</ORIGINAL_SITE_IDENTIFIER_HASH>
+    <ORIGINAL_WWWROOT/>
+    <ORIGINAL_SITE_IDENTIFIER_HASH/>
     <ZIP_METHOD>internal</ZIP_METHOD>
     <DETAILS>
-      <MOD>
-        <NAME>forum</NAME>
-        <INCLUDED>true</INCLUDED>
-        <USERINFO>true</USERINFO>
-        <INSTANCES>
-          <INSTANCE>
-          <ID>1</ID>
-          <NAME>News forum</NAME>
-          <INCLUDED>true</INCLUDED>
-          <USERINFO>true</USERINFO>
-          </INSTANCE>
-        </INSTANCES>
-      </MOD>
       <METACOURSE>false</METACOURSE>
       <USERS>course</USERS>
       <LOGS>false</LOGS>
@@ -45,11 +32,11 @@
         <ID>1</ID>
         <NAME>Miscellaneous</NAME>
       </CATEGORY>
-      <PASSWORD></PASSWORD>
+      <PASSWORD/>
       <FULLNAME>Course Fullname 101</FULLNAME>
       <SHORTNAME>CF101</SHORTNAME>
-      <IDNUMBER></IDNUMBER>
-      <SUMMARY></SUMMARY>
+      <IDNUMBER/>
+      <SUMMARY/>
       <FORMAT>weeks</FORMAT>
       <SHOWGRADES>1</SHOWGRADES>
       <NEWSITEMS>5</NEWSITEMS>
@@ -65,9 +52,9 @@
       <GROUPMODE>0</GROUPMODE>
       <GROUPMODEFORCE>0</GROUPMODEFORCE>
       <DEFAULTGROUPINGID>0</DEFAULTGROUPINGID>
-      <LANG></LANG>
-      <THEME></THEME>
-      <COST></COST>
+      <LANG/>
+      <THEME/>
+      <COST/>
       <CURRENCY>USD</CURRENCY>
       <MARKER>0</MARKER>
       <VISIBLE>1</VISIBLE>
@@ -93,67 +80,13 @@
       <SECTION>
         <ID>1</ID>
         <NUMBER>0</NUMBER>
-        <SUMMARY></SUMMARY>
+        <SUMMARY/>
         <VISIBLE>1</VISIBLE>
       </SECTION>
       <SECTION>
         <ID>2</ID>
         <NUMBER>1</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>3</ID>
-        <NUMBER>2</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>4</ID>
-        <NUMBER>3</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>5</ID>
-        <NUMBER>4</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>6</ID>
-        <NUMBER>5</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>7</ID>
-        <NUMBER>6</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>8</ID>
-        <NUMBER>7</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>9</ID>
-        <NUMBER>8</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>10</ID>
-        <NUMBER>9</NUMBER>
-        <SUMMARY></SUMMARY>
-        <VISIBLE>1</VISIBLE>
-      </SECTION>
-      <SECTION>
-        <ID>11</ID>
-        <NUMBER>10</NUMBER>
-        <SUMMARY></SUMMARY>
+        <SUMMARY/>
         <VISIBLE>1</VISIBLE>
       </SECTION>
     </SECTIONS>
