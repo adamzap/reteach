@@ -1,8 +1,13 @@
+import time
+
 import elixer
 
 class TestCourse(object):
     def __init__(self):
         raise NotImplementedError('Do not instantiate base class')
+
+    def add_date(self):
+        self.timestamp = str(time.time()).split('.')[0]
 
     def add_sections(self):
         self.sections = []
