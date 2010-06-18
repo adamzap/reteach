@@ -11,6 +11,23 @@
     <ORIGINAL_SITE_IDENTIFIER_HASH/>
     <ZIP_METHOD>internal</ZIP_METHOD>
     <DETAILS>
+      {% if course.forums %}
+      <MOD>
+        <NAME>forum</NAME>
+        <INCLUDED>true</INCLUDED>
+        <USERINFO>false</USERINFO>
+        <INSTANCES>
+            {% for forum in course.forums %}
+            <INSTANCE>
+                <ID>{{ forum.id }}</ID>
+                <NAME>{{ forum.name }}</NAME>
+                <INCLUDED>true</INCLUDED>
+                <USERINFO>false</USERINFO>
+            </INSTANCE>
+            {% endfor %}
+        </INSTANCES>
+      </MOD>
+      {% endif %}
       <METACOURSE>false</METACOURSE>
       <USERS>none</USERS>
       <LOGS>false</LOGS>
@@ -83,12 +100,55 @@
           <NUMBER>{{ section.number }}</NUMBER>
           <SUMMARY>{{ section.summary|escape }}</SUMMARY>
           <VISIBLE>{{ section.visible }}</VISIBLE>
+          <MODS>
+            {% for forum in course.forums %}
+              {% if forum.section_num == section.number %}
+            <MOD>
+              <ID>{{ forum.section_id }}</ID>
+              <TYPE>forum</TYPE>
+              <INSTANCE>{{ forum.id }}</INSTANCE>
+              <ADDED>{{ course.timestamp }}</ADDED>
+              <SCORE>0</SCORE>
+              <INDENT>0</INDENT>
+              <VISIBLE>1</VISIBLE>
+              <GROUPMODE>0</GROUPMODE>
+              <GROUPINGID>0</GROUPINGID>
+              <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+              <IDNUMBER></IDNUMBER>
+              <ROLES_OVERRIDES/>
+              <ROLES_ASSIGNMENTS/>
+            </MOD>
+              {% endif %}
+            {% endfor %}
+          </MODS>
         </SECTION>
       {% endfor %}
     </SECTIONS>
     <GRADEBOOK>
     </GRADEBOOK>
     <MODULES>
+      {% for forum in course.forums %}
+      <MOD>
+        <ID>{{ forum.id }}</ID>
+        <MODTYPE>forum</MODTYPE>
+        <TYPE>general</TYPE>
+        <NAME>{{ forum.name }}</NAME>
+        <INTRO>{{ forum.introduction|escape }}</INTRO>
+        <ASSESSED>0</ASSESSED>
+        <ASSESSTIMESTART>0</ASSESSTIMESTART>
+        <ASSESSTIMEFINISH>0</ASSESSTIMEFINISH>
+        <MAXBYTES>512000</MAXBYTES>
+        <SCALE>0</SCALE>
+        <FORCESUBSCRIBE>0</FORCESUBSCRIBE>
+        <TRACKINGTYPE>1</TRACKINGTYPE>
+        <RSSTYPE>0</RSSTYPE>
+        <RSSARTICLES>0</RSSARTICLES>
+        <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+        <WARNAFTER>0</WARNAFTER>
+        <BLOCKAFTER>0</BLOCKAFTER>
+        <BLOCKPERIOD>0</BLOCKPERIOD>
+      </MOD>
+      {% endfor %}
     </MODULES>
     <FORMATDATA>
     </FORMATDATA>

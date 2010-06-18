@@ -22,6 +22,20 @@ class TestCourse(object):
 
             self.sections.append(section)
 
+    def add_forums(self):
+        self.forums = []
+
+        for n in xrange(4):
+            forum = {}
+
+            forum['name'] = 'Forum #%s' % (n + 1)
+            forum['introduction'] = 'Forum #%s introduction' % (n + 1)
+            forum['id'] = abs(hash((forum['name'], forum['introduction'])))
+            forum['section_num'] = n
+            forum['section_id'] = abs(hash((forum['id'], forum['section_num'])))
+
+            self.forums.append(forum)
+
 class FullTestCourse(TestCourse):
     def __init__(self):
         methods = [m for m in dir(self.__class__) if not m.startswith('__')]
