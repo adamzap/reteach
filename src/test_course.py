@@ -2,6 +2,8 @@ import time
 
 import elixer
 
+from elixer import m_hash
+
 class TestCourse(object):
     def __init__(self):
         raise NotImplementedError('Do not instantiate base class')
@@ -18,7 +20,7 @@ class TestCourse(object):
             section['number'] = n
             section['summary'] = '<h2>Test Section #%s</h2>' % (n + 1)
             section['visible'] = 1
-            section['id'] = abs(hash((section['number'], section['summary'])))
+            section['id'] = m_hash(section['number'], section['summary'])
 
             self.sections.append(section)
 
@@ -30,9 +32,9 @@ class TestCourse(object):
 
             forum['name'] = 'Forum #%s' % (n + 1)
             forum['introduction'] = 'Forum #%s introduction' % (n + 1)
-            forum['id'] = abs(hash((forum['name'], forum['introduction'])))
+            forum['id'] = m_hash(forum['name'], forum['introduction'])
             forum['section_num'] = n
-            forum['section_id'] = abs(hash((forum['id'], forum['section_num'])))
+            forum['section_id'] = m_hash(forum['id'], forum['section_num'])
 
             self.forums.append(forum)
 

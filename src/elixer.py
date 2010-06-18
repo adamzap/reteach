@@ -2,6 +2,9 @@ import sys
 import jinja2
 import zipfile
 
+def m_hash(*args):
+    return abs(hash(args))
+
 def create_moodle_zip(course, out_name):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
 
