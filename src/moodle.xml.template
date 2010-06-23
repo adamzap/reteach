@@ -125,56 +125,55 @@
       <ROLES_ASSIGNMENTS>
       </ROLES_ASSIGNMENTS>
     </HEADER>
-    <BLOCKS>
-    </BLOCKS>
+    <BLOCKS/>
     <SECTIONS>
       {% for section in course.sections %}
-        <SECTION>
-          <ID>{{ section.id}}</ID>
-          <NUMBER>{{ section.number }}</NUMBER>
-          <SUMMARY>{{ section.summary|escape }}</SUMMARY>
-          <VISIBLE>{{ section.visible }}</VISIBLE>
-          <MODS>
-            {% for forum in course.forums %}
-              {% if forum.section_num == section.number %}
-            <MOD>
-              <ID>{{ forum.section_id }}</ID>
-              <TYPE>forum</TYPE>
-              <INSTANCE>{{ forum.id }}</INSTANCE>
-              <ADDED>{{ course.timestamp }}</ADDED>
-              <SCORE>0</SCORE>
-              <INDENT>0</INDENT>
-              <VISIBLE>1</VISIBLE>
-              <GROUPMODE>0</GROUPMODE>
-              <GROUPINGID>0</GROUPINGID>
-              <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
-              <IDNUMBER></IDNUMBER>
-              <ROLES_OVERRIDES/>
-              <ROLES_ASSIGNMENTS/>
-            </MOD>
-              {% endif %}
-            {% endfor %}
-            {% for label in course.labels %}
-              {% if label.section_num == section.number %}
-            <MOD>
-              <ID>{{ label.section_id }}</ID>
-              <TYPE>label</TYPE>
-              <INSTANCE>{{ label.id }}</INSTANCE>
-              <ADDED>{{ course.timestamp }}</ADDED>
-              <SCORE>0</SCORE>
-              <INDENT>0</INDENT>
-              <VISIBLE>1</VISIBLE>
-              <GROUPMODE>0</GROUPMODE>
-              <GROUPINGID>0</GROUPINGID>
-              <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
-              <IDNUMBER>$@NULL@$</IDNUMBER>
-              <ROLES_OVERRIDES/>
-              <ROLES_ASSIGNMENTS/>
-            </MOD>
-               {% endif %}
-             {% endfor %}
-             {% for resource in course.resources %}
-               {% if resource.section_num == section.number %}
+      <SECTION>
+        <ID>{{ section.id}}</ID>
+        <NUMBER>{{ section.number }}</NUMBER>
+        <SUMMARY>{{ section.summary|escape }}</SUMMARY>
+        <VISIBLE>{{ section.visible }}</VISIBLE>
+        <MODS>
+        {% for forum in course.forums %}
+          {% if forum.section_num == section.number %}
+          <MOD>
+            <ID>{{ forum.section_id }}</ID>
+            <TYPE>forum</TYPE>
+            <INSTANCE>{{ forum.id }}</INSTANCE>
+            <ADDED>{{ course.timestamp }}</ADDED>
+            <SCORE>0</SCORE>
+            <INDENT>0</INDENT>
+            <VISIBLE>1</VISIBLE>
+            <GROUPMODE>0</GROUPMODE>
+            <GROUPINGID>0</GROUPINGID>
+            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+            <IDNUMBER></IDNUMBER>
+            <ROLES_OVERRIDES/>
+            <ROLES_ASSIGNMENTS/>
+          </MOD>
+          {% endif %}
+        {% endfor %}
+        {% for label in course.labels %}
+          {% if label.section_num == section.number %}
+          <MOD>
+            <ID>{{ label.section_id }}</ID>
+            <TYPE>label</TYPE>
+            <INSTANCE>{{ label.id }}</INSTANCE>
+            <ADDED>{{ course.timestamp }}</ADDED>
+            <SCORE>0</SCORE>
+            <INDENT>0</INDENT>
+            <VISIBLE>1</VISIBLE>
+            <GROUPMODE>0</GROUPMODE>
+            <GROUPINGID>0</GROUPINGID>
+            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+            <IDNUMBER>$@NULL@$</IDNUMBER>
+            <ROLES_OVERRIDES/>
+            <ROLES_ASSIGNMENTS/>
+          </MOD>
+          {% endif %}
+        {% endfor %}
+        {% for resource in course.resources %}
+          {% if resource.section_num == section.number %}
           <MOD>
             <ID>{{ resource.section_id }}</ID>
             <TYPE>resource</TYPE>
@@ -190,14 +189,13 @@
             <ROLES_OVERRIDES/>
             <ROLES_ASSIGNMENTS/>
           </MOD>
-               {% endif %}
-             {% endfor %}
-          </MODS>
-        </SECTION>
+          {% endif %}
+        {% endfor %}
+        </MODS>
+      </SECTION>
       {% endfor %}
     </SECTIONS>
-    <GRADEBOOK>
-    </GRADEBOOK>
+    <GRADEBOOK/>
     <MODULES>
       {% for forum in course.forums %}
       <MOD>
