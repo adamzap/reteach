@@ -28,6 +28,23 @@
         </INSTANCES>
       </MOD>
       {% endif %}
+      {% if course.labels %}
+      <MOD>
+        <NAME>label</NAME>
+        <INCLUDED>true</INCLUDED>
+        <USERINFO>false</USERINFO>
+        <INSTANCES>
+          {% for label in course.labels %}
+          <INSTANCE>
+          <ID>{{ label.id }}</ID>
+          <NAME>{{ label.name }}</NAME>
+          <INCLUDED>true</INCLUDED>
+          <USERINFO>false</USERINFO>
+          </INSTANCE>
+          {% endfor %}
+        </INSTANCES>
+      </MOD>
+      {% endif %}
       <METACOURSE>false</METACOURSE>
       <USERS>none</USERS>
       <LOGS>false</LOGS>
@@ -120,6 +137,25 @@
             </MOD>
               {% endif %}
             {% endfor %}
+            {% for label in course.labels %}
+              {% if label.section_num == section.number %}
+            <MOD>
+              <ID>{{ label.section_id }}</ID>
+              <TYPE>label</TYPE>
+              <INSTANCE>{{ label.id }}</INSTANCE>
+              <ADDED>{{ course.timestamp }}</ADDED>
+              <SCORE>0</SCORE>
+              <INDENT>0</INDENT>
+              <VISIBLE>1</VISIBLE>
+              <GROUPMODE>0</GROUPMODE>
+              <GROUPINGID>0</GROUPINGID>
+              <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+              <IDNUMBER>$@NULL@$</IDNUMBER>
+              <ROLES_OVERRIDES/>
+              <ROLES_ASSIGNMENTS/>
+            </MOD>
+               {% endif %}
+             {% endfor %}
           </MODS>
         </SECTION>
       {% endfor %}
@@ -147,6 +183,15 @@
         <WARNAFTER>0</WARNAFTER>
         <BLOCKAFTER>0</BLOCKAFTER>
         <BLOCKPERIOD>0</BLOCKPERIOD>
+      </MOD>
+      {% endfor %}
+      {% for label in course.labels %}
+      <MOD>
+        <ID>{{ label.id }}</ID>
+        <MODTYPE>label</MODTYPE>
+        <NAME>{{ label.name }}</NAME>
+        <CONTENT>{{ label.content|escape }}</CONTENT>
+        <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
       </MOD>
       {% endfor %}
     </MODULES>
