@@ -45,6 +45,23 @@
         </INSTANCES>
       </MOD>
       {% endif %}
+      {% if course.resources %}
+      <MOD>
+        <NAME>resource</NAME>
+        <INCLUDED>true</INCLUDED>
+        <USERINFO>false</USERINFO>
+        <INSTANCES>
+          {% for resource in course.resources %}
+          <INSTANCE>
+            <ID>{{ resource.id }}</ID>
+            <NAME>{{ resource.name }}</NAME>
+            <INCLUDED>true</INCLUDED>
+            <USERINFO>false</USERINFO>
+          </INSTANCE>
+          {% endfor %}
+        </INSTANCES>
+      </MOD>
+      {% endif %}
       <METACOURSE>false</METACOURSE>
       <USERS>none</USERS>
       <LOGS>false</LOGS>
@@ -156,6 +173,25 @@
             </MOD>
                {% endif %}
              {% endfor %}
+             {% for resource in course.resources %}
+               {% if resource.section_num == section.number %}
+          <MOD>
+            <ID>{{ resource.section_id }}</ID>
+            <TYPE>resource</TYPE>
+            <INSTANCE>{{ resource.id }}</INSTANCE>
+            <ADDED>{{ course.timestamp }}</ADDED>
+            <SCORE>0</SCORE>
+            <INDENT>0</INDENT>
+            <VISIBLE>1</VISIBLE>
+            <GROUPMODE>0</GROUPMODE>
+            <GROUPINGID>0</GROUPINGID>
+            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+            <IDNUMBER></IDNUMBER>
+            <ROLES_OVERRIDES/>
+            <ROLES_ASSIGNMENTS/>
+          </MOD>
+               {% endif %}
+             {% endfor %}
           </MODS>
         </SECTION>
       {% endfor %}
@@ -191,6 +227,20 @@
         <MODTYPE>label</MODTYPE>
         <NAME>{{ label.name }}</NAME>
         <CONTENT>{{ label.content|escape }}</CONTENT>
+        <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+      </MOD>
+      {% endfor %}
+      {% for resource in course.resources %}
+      <MOD>
+        <ID>{{ resource.id }}</ID>
+        <MODTYPE>resource</MODTYPE>
+        <NAME>{{ resource.name }}</NAME>
+        <TYPE>{{ resource.type }}</TYPE>
+        <REFERENCE>{{ resource.reference }}</REFERENCE>
+        <SUMMARY>{{ resource.summary|escape }}</SUMMARY>
+        <ALLTEXT>{{ resource.alltext|escape }}</ALLTEXT>
+        <POPUP></POPUP>
+        <OPTIONS></OPTIONS>
         <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
       </MOD>
       {% endfor %}

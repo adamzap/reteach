@@ -14,7 +14,7 @@ class TestCourse(object):
     def add_sections(self):
         self.sections = []
 
-        for n in xrange(4):
+        for n in xrange(5):
             section = {}
 
             section['number'] = n
@@ -51,6 +51,49 @@ class TestCourse(object):
             label['section_id'] = m_hash(label['id'], label['section_num'])
 
             self.labels.append(label)
+
+    def add_resources(self):
+        text_res = {}
+        text_res['name'] = 'Text Page Resource'
+        text_res['type'] = 'text'
+        text_res['reference'] = '2'
+        text_res['summary'] = 'Text Page Resource Summary'
+        text_res['alltext'] = 'Blah Blah Blah Blah'
+        text_res['id'] = m_hash(text_res['name'], text_res['alltext'])
+        text_res['section_num'] = 4
+        text_res['section_id'] = m_hash(text_res['id'], text_res['section_num'])
+
+        html_res = {}
+        html_res['name'] = 'Web Page Resource'
+        html_res['type'] = 'html'
+        html_res['reference'] = '2'
+        html_res['summary'] = 'Web Page Resource Summary'
+        html_res['alltext'] = '<h2>Blah Blah Blah Blah</h2>'
+        html_res['id'] = m_hash(html_res['name'], html_res['alltext'])
+        html_res['section_num'] = 4
+        html_res['section_id'] = m_hash(html_res['id'], html_res['section_num'])
+
+        link_res = {}
+        link_res['name'] = 'Link Resource'
+        link_res['type'] = 'file'
+        link_res['reference'] = 'http://cnn.com'
+        link_res['summary'] = 'Link Resource Summary'
+        link_res['alltext'] = ''
+        link_res['id'] = m_hash(link_res['name'], link_res['reference'])
+        link_res['section_num'] = 4
+        link_res['section_id'] = m_hash(link_res['id'], link_res['section_num'])
+
+        file_res = {}
+        file_res['name'] = 'File Resource'
+        file_res['type'] = 'file'
+        file_res['reference'] = 'moodle.xml'
+        file_res['summary'] = 'File Resource Summary'
+        file_res['alltext'] = ''
+        file_res['id'] = m_hash(file_res['name'], file_res['reference'])
+        file_res['section_num'] = 4
+        file_res['section_id'] = m_hash(file_res['id'], file_res['section_num'])
+
+        self.resources = [text_res, html_res, link_res, file_res]
 
 class FullTestCourse(TestCourse):
     def __init__(self):
