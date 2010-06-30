@@ -101,6 +101,8 @@ class FullTestCourse(TestCourse):
 
         [getattr(self, method)() for method in methods]
 
-course = FullTestCourse()
 
-elixer.create_moodle_zip(course, 'out.zip')
+if __name__ == '__main__':
+    course = FullTestCourse()
+
+    elixer.create_moodle_zip(course, 'out.zip')
