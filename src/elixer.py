@@ -2,8 +2,8 @@ import sys
 import jinja2
 import zipfile
 
-def m_hash(*args):
-    return abs(hash(args))
+def m_hash(obj):
+    return abs(hash(tuple(obj.__dict__.values())))
 
 def create_moodle_zip(course, out_name):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
