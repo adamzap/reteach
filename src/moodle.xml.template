@@ -84,8 +84,8 @@
         <NAME>Miscellaneous</NAME>
       </CATEGORY>
       <PASSWORD/>
-      <FULLNAME>Course Fullname 101</FULLNAME>
-      <SHORTNAME>CF101</SHORTNAME>
+      <FULLNAME>{{ course.fullname }}</FULLNAME>
+      <SHORTNAME>{{ course.shortname }}</SHORTNAME>
       <IDNUMBER/>
       <SUMMARY/>
       <FORMAT>topics</FORMAT>
