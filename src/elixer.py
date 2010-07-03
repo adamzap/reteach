@@ -7,7 +7,7 @@ import datetime
 
 def m_hash(obj):
     if isinstance(obj, dict):
-        return abs(hash(tuple(obj)))
+        return abs(hash(tuple(obj.values())))
     else:
         return abs(hash(tuple(obj.__dict__.values())))
 
