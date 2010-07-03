@@ -3,7 +3,10 @@ import jinja2
 import zipfile
 
 def m_hash(obj):
-    return abs(hash(tuple(obj.__dict__.values())))
+    if isinstance(obj, dict):
+        return abs(hash(tuple(obj)))
+    else:
+        return abs(hash(tuple(obj.__dict__.values())))
 
 def create_moodle_zip(course, out_name):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
