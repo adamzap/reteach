@@ -11,6 +11,23 @@
     <ORIGINAL_SITE_IDENTIFIER_HASH/>
     <ZIP_METHOD>internal</ZIP_METHOD>
     <DETAILS>
+      {% if course.quizzes %}
+      <MOD>
+          <NAME>quiz</NAME>
+          <INCLUDED>true</INCLUDED>
+          <USERINFO>false</USERINFO>
+          <INSTANCES>
+            {% for quiz in course.quizzes %}
+            <INSTANCE>
+                <ID>{{ quiz.id }}</ID>
+                <NAME>{{ quiz.name }}</NAME>
+                <INCLUDED>true</INCLUDED>
+                <USERINFO>false</USERINFO>
+            </INSTANCE>
+            {% endfor %}
+          </INSTANCES>
+      </MOD>
+      {% endif %}
       {% if course.forums %}
       <MOD>
         <NAME>forum</NAME>
@@ -134,6 +151,25 @@
         <SUMMARY>{{ section.summary|escape }}</SUMMARY>
         <VISIBLE>{{ section.visible }}</VISIBLE>
         <MODS>
+        {% for quiz in course.quizzes %}
+          {% if quiz.section_num == section.number %}
+          <MOD>
+            <ID>{{ quiz.section_id }}</ID>
+            <TYPE>quiz</TYPE>
+            <INSTANCE>{{ quiz.id }}</INSTANCE>
+            <ADDED>{{ course.timestamp }}</ADDED>
+            <SCORE>0</SCORE>
+            <INDENT>0</INDENT>
+            <VISIBLE>1</VISIBLE>
+            <GROUPMODE>0</GROUPMODE>
+            <GROUPINGID>0</GROUPINGID>
+            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
+            <IDNUMBER></IDNUMBER>
+            <ROLES_OVERRIDES/>
+            <ROLES_ASSIGNMENTS/>
+          </MOD>
+          {% endif %}
+        {% endfor %}
         {% for forum in course.forums %}
           {% if forum.section_num == section.number %}
           <MOD>
@@ -195,8 +231,104 @@
       </SECTION>
       {% endfor %}
     </SECTIONS>
-    <GRADEBOOK/>
+    {% if course.questions %}
+    <QUESTION_CATEGORIES>
+      <QUESTION_CATEGORY>
+        <ID>{{ course.quiz_category_id }}</ID>
+        <NAME>Questions for {{ course.shortname }}</NAME>
+        <INFO>All quiz questions for {{ course.shortname }}</INFO>
+        <CONTEXT>
+          <LEVEL>course</LEVEL>
+        </CONTEXT>
+        <STAMP>{{ course.quiz_category_stamp }}</STAMP>
+        <PARENT>0</PARENT>
+        <SORTORDER>999</SORTORDER>
+        <QUESTIONS>
+          {% for essay_question in course.questions.essay %}
+          <QUESTION>
+            <ID>{{ essay_question.id }}</ID>
+            <PARENT>0</PARENT>
+            <NAME>{{ essay_question.name }}</NAME>
+            <QUESTIONTEXT>{{ essay_question.text }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <IMAGE></IMAGE>
+            <GENERALFEEDBACK></GENERALFEEDBACK>
+            <DEFAULTGRADE>1</DEFAULTGRADE>
+            <PENALTY>0</PENALTY>
+            <QTYPE>{{ essay_question.type }}</QTYPE>
+            <LENGTH>1</LENGTH>
+            <STAMP>{{ essay_question.stamp }}</STAMP>
+            <VERSION>{{ essay_question.stamp }}</VERSION>
+            <HIDDEN>0</HIDDEN>
+            <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+            <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+            <ANSWERS>
+              <ANSWER>
+                <ID>{{ essay_question.answer_id }}</ID>
+                <ANSWER_TEXT>{{ essay_question.feedback }}</ANSWER_TEXT>
+                <FRACTION>0</FRACTION>
+                <FEEDBACK>{{ essay_question.feedback }}</FEEDBACK>
+              </ANSWER>
+            </ANSWERS>
+          </QUESTION>
+          {% endfor %}
+        </QUESTIONS>
+      </QUESTION_CATEGORY>
+    </QUESTION_CATEGORIES>
+    {% endif %}
+     <GRADEBOOK/>
     <MODULES>
+      {% for quiz in course.quizzes %}
+      <MOD>
+        <ID>{{ quiz.id }}</ID>
+        <MODTYPE>quiz</MODTYPE>
+        <NAME>{{ quiz.name }}</NAME>
+        <INTRO>{{ quiz.intro }}</INTRO>
+        <TIMEOPEN>0</TIMEOPEN>
+        <TIMECLOSE>0</TIMECLOSE>
+        <OPTIONFLAGS>1</OPTIONFLAGS>
+        <PENALTYSCHEME>1</PENALTYSCHEME>
+        <ATTEMPTS_NUMBER>0</ATTEMPTS_NUMBER>
+        <ATTEMPTONLAST>0</ATTEMPTONLAST>
+        <GRADEMETHOD>1</GRADEMETHOD>
+        <DECIMALPOINTS>2</DECIMALPOINTS>
+        <REVIEW>4652015</REVIEW>
+        <QUESTIONSPERPAGE>0</QUESTIONSPERPAGE>
+        <SHUFFLEQUESTIONS>0</SHUFFLEQUESTIONS>
+        <SHUFFLEANSWERS>1</SHUFFLEANSWERS>
+        <QUESTIONS>{{ quiz.question_string }}</QUESTIONS>
+        <SUMGRADES>1</SUMGRADES>
+        <GRADE>10</GRADE>
+        <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+        <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+        <TIMELIMIT>0</TIMELIMIT>
+        <PASSWORD></PASSWORD>
+        <SUBNET></SUBNET>
+        <POPUP>0</POPUP>
+        <DELAY1>0</DELAY1>
+        <DELAY2>0</DELAY2>
+        {% if quiz.questions %}
+        <QUESTION_INSTANCES>
+          {% for question in quiz.questions %}
+          <QUESTION_INSTANCE>
+            <ID>{{ question.id }}</ID>
+            <QUESTION>{{ question.id }}</QUESTION>
+            <GRADE>1</GRADE>
+          </QUESTION_INSTANCE>
+          {% endfor %}
+        </QUESTION_INSTANCES>
+        {% endif %}
+        <FEEDBACKS>
+          <FEEDBACK>
+            <ID>{{ quiz.feedback_id }}</ID>
+            <QUIZID>{{ quiz.id }}</QUIZID>
+            <FEEDBACKTEXT></FEEDBACKTEXT>
+            <MINGRADE>0</MINGRADE>
+            <MAXGRADE>11</MAXGRADE>
+          </FEEDBACK>
+        </FEEDBACKS>
+      </MOD>
+      {% endfor %}
       {% for forum in course.forums %}
       <MOD>
         <ID>{{ forum.id }}</ID>

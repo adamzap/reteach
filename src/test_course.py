@@ -1,12 +1,16 @@
 import time
+import random
 
 import elixer
 
-from elixer import m_hash
+from elixer import m_hash, generate_stamp
 
 class TestCourse(object):
     def __init__(self):
         raise NotImplementedError('Do not instantiate base class')
+
+    def add_course_settings(self):
+        self.fullname = self.shortname = random.randrange(0, 1000)
 
     def add_date(self):
         self.timestamp = str(time.time()).split('.')[0]
@@ -95,11 +99,65 @@ class TestCourse(object):
 
         self.resources = [text_res, html_res, link_res, file_res]
 
+    def add_questions_container(self):
+        self.questions = {}
+
+        self.quiz_category_id = 22345678
+        self.quiz_category_stamp = generate_stamp()
+
+    def add_questions_essay(self):
+        essay_questions = []
+
+        for n in xrange(2):
+            essay_question = {}
+
+            essay_question['name'] = 'Essay Question #%s' % (n + 1)
+            essay_question['text'] = 'Text for essay question #%s' % (n + 1)
+            essay_question['type'] = 'essay'
+            essay_question['stamp'] = generate_stamp()
+            essay_question['id'] = m_hash(essay_question)
+            essay_question['feedback'] = 'Feedback for Essay Question #%s' % (n + 1)
+            essay_question['answer_id'] = m_hash(essay_question)
+
+            essay_questions.append(essay_question)
+
+        self.questions['essay'] = essay_questions
+
+    """
+    def add_quizzes(self):
+        all_qs = []
+
+        [all_qs.extend(l) for l in self.questions.itervalues()]
+
+        self.quizzes = []
+
+        quiz = {}
+
+        quiz['name'] = 'Question Container'
+        quiz['intro'] = ''
+        quiz['question_string'] = ','.join([str(s['id']) for s in all_qs])
+        quiz['id'] = m_hash(quiz)
+        quiz['section_num'] = 4
+        quiz['section_id'] = m_hash(quiz)
+        quiz['feedback_id'] = m_hash(quiz)
+        #quiz['questions'] = all_qs
+
+        self.quizzes.append(quiz)
+    """
+
+
 class FullTestCourse(TestCourse):
     def __init__(self):
         methods = [m for m in dir(self.__class__) if not m.startswith('__')]
 
         [getattr(self, method)() for method in methods]
+
+class QuizTestCourse(TestCourse):
+    def __init__(self):
+        add_course_settings()
+        add_sections()
+        add_questions_container()
+        add_quizzes()
 
 
 if __name__ == '__main__':
