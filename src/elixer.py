@@ -5,11 +5,17 @@ import random
 import zipfile
 import datetime
 
-def m_hash(obj):
-    if isinstance(obj, dict):
-        return abs(hash(tuple(obj.values())))
+def m_hash(*args):
+    # TODO: Refactor?
+
+    if len(args) > 1:
+        the_hash = abs(hash(args))
+    elif isinstance(args[0], dict):
+        the_hash = abs(hash(tuple(args[0].values())))
     else:
-        return abs(hash(tuple(obj.__dict__.values())))
+        the_hash = abs(hash(tuple(args[0].__dict__.values())))
+
+    return int(str(the_hash)[-8:])
 
 def generate_stamp():
     chars = string.ascii_letters + string.digits
