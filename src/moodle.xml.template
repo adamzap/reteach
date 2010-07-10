@@ -344,6 +344,46 @@
             </ANSWERS>
           </QUESTION>
           {% endfor %}
+          {% for multichoice_question in course.questions.multichoice %}
+          <QUESTION>
+            <ID>{{ multichoice_question.id }}</ID>
+            <PARENT>0</PARENT>
+            <NAME>{{ multichoice_question.name }}</NAME>
+            <QUESTIONTEXT>{{ multichoice_question.text }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <IMAGE></IMAGE>
+            <GENERALFEEDBACK>{{ multichoice_question.general_feedback }}</GENERALFEEDBACK>
+            <DEFAULTGRADE>1</DEFAULTGRADE>
+            <PENALTY>0</PENALTY>
+            <QTYPE>multichoice</QTYPE>
+            <LENGTH>1</LENGTH>
+            <STAMP>{{ multichoice_question.stamp }}</STAMP>
+            <VERSION>{{ multichoice_question.stamp }}</VERSION>
+            <HIDDEN>0</HIDDEN>
+            <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+            <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+            <MULTICHOICE>
+                <LAYOUT>0</LAYOUT>
+                <ANSWERS>{{ multichoice_question.answer_string }}</ANSWERS>
+                <SINGLE>{{ multichoice_question.single_answer }}</SINGLE>
+                <SHUFFLEANSWERS>1</SHUFFLEANSWERS>
+                <CORRECTFEEDBACK>{{ multichoice_question.correct_feedback }}</CORRECTFEEDBACK>
+                <PARTIALLYCORRECTFEEDBACK>{{ multichoice_question.partially_correct_feedback }}</PARTIALLYCORRECTFEEDBACK>
+                <INCORRECTFEEDBACK>{{ multichoice_question.incorrect_feedback }}</INCORRECTFEEDBACK>
+                <ANSWERNUMBERING>abc</ANSWERNUMBERING>
+            </MULTICHOICE>
+            <ANSWERS>
+              {% for answer in multichoice_question.answers %}
+              <ANSWER>
+                <ID>{{ answer.id }}</ID>
+                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
+                <FRACTION>{{ answer.points }}</FRACTION>
+                <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
+              </ANSWER>
+              {% endfor %}
+            </ANSWERS>
+          </QUESTION>
+          {% endfor %}
         </QUESTIONS>
       </QUESTION_CATEGORY>
     </QUESTION_CATEGORIES>

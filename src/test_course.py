@@ -178,6 +178,42 @@ class TestCourse(object):
 
         self.questions['shortanswer'] = shortanswer_questions
 
+    def add_questions_multichoice(self):
+        multichoice_questions = []
+
+        for n in xrange(2):
+            mc_question = {}
+
+            mc_question['name'] = 'Multichoice Question #%s' % (n + 1)
+            mc_question['text'] = 'Text for multichoice question #%s' % (n + 1)
+            mc_question['stamp'] = generate_stamp()
+            mc_question['single_answer'] = n
+            mc_question['id'] = m_hash(mc_question)
+            mc_question['general_feedback'] = 'Gen feedback for mc #%s' % (n + 1)
+            mc_question['correct_feedback'] = 'Correct feedback for mc #%s' % (n + 1)
+            mc_question['partially_correct_feedback'] = 'Partial feedback for mc #%s' % (n + 1)
+            mc_question['incorrect_feecback'] = 'Incorrect feedback for mc #%s' % (n + 1)
+
+            answers = []
+
+            for i in xrange(4):
+                answer = {}
+
+                answer['answer_text'] = 'Answer %s text for mc #%s' % (n, i)
+                answer['points'] = 1 if i == 1 else 0
+                answer['feedback'] = 'Answer %s feedback for mc #%s' % (n, i)
+                answer['id'] = m_hash(answer)
+
+                answers.append(answer)
+
+            mc_question['answers'] = answers
+
+            mc_question['answer_string'] = ','.join(str(a['id']) for a in answers)
+
+            multichoice_questions.append(mc_question)
+
+        self.questions['multichoice'] = multichoice_questions
+
 
     """
     def add_quizzes(self):
