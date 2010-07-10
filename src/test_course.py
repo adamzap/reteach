@@ -156,7 +156,7 @@ class TestCourse(object):
             sa_question['text'] = 'Text for shortanswer question #%s' % (n + 1)
             sa_question['stamp'] = generate_stamp()
             sa_question['id'] = m_hash(sa_question)
-            sa_question['general_feedback'] = 'Gen feedback for tf #%s' % (n + 1)
+            sa_question['general_feedback'] = 'Gen feedback for sa #%s' % (n + 1)
 
             answers = []
 
