@@ -146,6 +146,39 @@ class TestCourse(object):
 
         self.questions['truefalse'] = truefalse_questions
 
+    def add_questions_shortanswer(self):
+        shortanswer_questions = []
+
+        for n in xrange(2):
+            sa_question = {}
+
+            sa_question['name'] = 'Shortanswer Question #%s' % (n + 1)
+            sa_question['text'] = 'Text for shortanswer question #%s' % (n + 1)
+            sa_question['stamp'] = generate_stamp()
+            sa_question['id'] = m_hash(sa_question)
+            sa_question['general_feedback'] = 'Gen feedback for tf #%s' % (n + 1)
+
+            answers = []
+
+            for i in xrange(4):
+                answer = {}
+
+                answer['answer_text'] = 'Answer %s text for sa #%s' % (n, i)
+                answer['points'] = 1 if i == 1 else 0
+                answer['feedback'] = 'Answer %s feedback for sa #%s' % (n, i)
+                answer['id'] = m_hash(answer)
+
+                answers.append(answer)
+
+            sa_question['answers'] = answers
+
+            sa_question['answer_string'] = ','.join(str(a['id']) for a in answers)
+
+            shortanswer_questions.append(sa_question)
+
+        self.questions['shortanswer'] = shortanswer_questions
+
+
     """
     def add_quizzes(self):
         all_qs = []

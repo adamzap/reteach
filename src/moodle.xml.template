@@ -310,6 +310,40 @@
             </ANSWERS>
           </QUESTION>
           {% endfor %}
+          {% for shortanswer_question in course.questions.shortanswer %}
+          <QUESTION>
+            <ID>{{ shortanswer_question.id }}</ID>
+            <PARENT>0</PARENT>
+            <NAME>{{ shortanswer_question.name }}</NAME>
+            <QUESTIONTEXT>{{ shortanswer_question.text }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <IMAGE></IMAGE>
+            <GENERALFEEDBACK>{{ shortanswer_question.general_feedback }}</GENERALFEEDBACK>
+            <DEFAULTGRADE>1</DEFAULTGRADE>
+            <PENALTY>0</PENALTY>
+            <QTYPE>shortanswer</QTYPE>
+            <LENGTH>1</LENGTH>
+            <STAMP>{{ shortanswer_question.stamp }}</STAMP>
+            <VERSION>{{ shortanswer_question.stamp }}</VERSION>
+            <HIDDEN>0</HIDDEN>
+            <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+            <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+            <SHORTANSWER>
+                <ANSWERS>{{ shortanswer_question.answer_string }}</ANSWERS>
+                <USECASE>0</USECASE>
+            </SHORTANSWER>
+            <ANSWERS>
+              {% for answer in shortanswer_question.answers %}
+              <ANSWER>
+                <ID>{{ answer.id }}</ID>
+                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
+                <FRACTION>{{ answer.points }}</FRACTION>
+                <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
+              </ANSWER>
+              {% endfor %}
+            </ANSWERS>
+          </QUESTION>
+          {% endfor %}
         </QUESTIONS>
       </QUESTION_CATEGORY>
     </QUESTION_CATEGORIES>
