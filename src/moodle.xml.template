@@ -255,7 +255,7 @@
             <GENERALFEEDBACK></GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
-            <QTYPE>{{ essay_question.type }}</QTYPE>
+            <QTYPE>essay</QTYPE>
             <LENGTH>1</LENGTH>
             <STAMP>{{ essay_question.stamp }}</STAMP>
             <VERSION>{{ essay_question.stamp }}</VERSION>

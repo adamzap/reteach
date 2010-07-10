@@ -113,7 +113,6 @@ class TestCourse(object):
 
             essay_question['name'] = 'Essay Question #%s' % (n + 1)
             essay_question['text'] = 'Text for essay question #%s' % (n + 1)
-            essay_question['type'] = 'essay'
             essay_question['stamp'] = generate_stamp()
             essay_question['id'] = m_hash(essay_question)
             essay_question['feedback'] = 'Feedback for Essay Question #%s' % (n + 1)
