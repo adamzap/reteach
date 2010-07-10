@@ -384,6 +384,39 @@
             </ANSWERS>
           </QUESTION>
           {% endfor %}
+          {% for matching_question in course.questions.matching %}
+          <QUESTION>
+            <ID>{{ matching_question.id }}</ID>
+            <PARENT>0</PARENT>
+            <NAME>{{ matching_question.name }}</NAME>
+            <QUESTIONTEXT>{{ matching_question.text }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <IMAGE></IMAGE>
+            <GENERALFEEDBACK>{{ matching_question.general_feedback }}</GENERALFEEDBACK>
+            <DEFAULTGRADE>1</DEFAULTGRADE>
+            <PENALTY>0</PENALTY>
+            <QTYPE>match</QTYPE>
+            <LENGTH>1</LENGTH>
+            <STAMP>{{ matching_question.stamp }}</STAMP>
+            <VERSION>{{ matching_question.stamp }}</VERSION>
+            <HIDDEN>0</HIDDEN>
+            <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+            <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+            <MATCHOPTIONS>
+              <SHUFFLEANSWERS>1</SHUFFLEANSWERS>
+            </MATCHOPTIONS>
+            <MATCHS>
+              {% for answer in matching_question.answers %}
+              <MATCH>
+                <ID>{{ answer.id }}</ID>
+                <CODE>{{ answer.id }}</CODE>
+                <QUESTIONTEXT>{{ answer.question_text}}</QUESTIONTEXT>
+                <ANSWERTEXT>{{ answer.answer_text }}</ANSWERTEXT>
+              </MATCH>
+              {% endfor %}
+            </MATCHS>
+          </QUESTION>
+          {% endfor %}
         </QUESTIONS>
       </QUESTION_CATEGORY>
     </QUESTION_CATEGORIES>

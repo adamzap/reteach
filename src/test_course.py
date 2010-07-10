@@ -214,6 +214,35 @@ class TestCourse(object):
 
         self.questions['multichoice'] = multichoice_questions
 
+    def add_questions_matching(self):
+        matching_questions = []
+
+        for n in xrange(2):
+            ma_question = {}
+
+            ma_question['name'] = 'Matching Question #%s' % (n + 1)
+            ma_question['text'] = 'Text for matching question #%s' % (n + 1)
+            ma_question['stamp'] = generate_stamp()
+            ma_question['id'] = m_hash(ma_question)
+            ma_question['general_feedback'] = 'Gen feedback for ma #%s' % (n + 1)
+
+            answers = []
+
+            for i in xrange(4):
+                answer = {}
+
+                answer['question_text'] = 'Question %s text for mc #%s' % (n, i)
+                answer['answer_text'] = 'Question %s text for mc #%s' % (n, i)
+                answer['id'] = m_hash(answer)
+
+                answers.append(answer)
+
+            ma_question['answers'] = answers
+
+            matching_questions.append(ma_question)
+
+        self.questions['matching'] = matching_questions
+
 
     """
     def add_quizzes(self):
