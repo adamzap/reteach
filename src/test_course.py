@@ -163,9 +163,9 @@ class TestCourse(object):
             for i in xrange(4):
                 answer = {}
 
-                answer['answer_text'] = 'Answer %s text for sa #%s' % (n, i)
+                answer['answer_text'] = 'Answer %s text for sa #%s' % (i, n)
                 answer['points'] = 1 if i == 1 else 0
-                answer['feedback'] = 'Answer %s feedback for sa #%s' % (n, i)
+                answer['feedback'] = 'Answer %s feedback for sa #%s' % (i, n)
                 answer['id'] = m_hash(answer)
 
                 answers.append(answer)
@@ -199,9 +199,9 @@ class TestCourse(object):
             for i in xrange(4):
                 answer = {}
 
-                answer['answer_text'] = 'Answer %s text for mc #%s' % (n, i)
+                answer['answer_text'] = 'Answer %s text for mc #%s' % (i, n)
                 answer['points'] = 1 if i == 1 else 0
-                answer['feedback'] = 'Answer %s feedback for mc #%s' % (n, i)
+                answer['feedback'] = 'Answer %s feedback for mc #%s' % (i, n)
                 answer['id'] = m_hash(answer)
 
                 answers.append(answer)
@@ -231,8 +231,8 @@ class TestCourse(object):
             for i in xrange(4):
                 answer = {}
 
-                answer['question_text'] = 'Question %s text for mc #%s' % (n, i)
-                answer['answer_text'] = 'Question %s text for mc #%s' % (n, i)
+                answer['question_text'] = 'Question %s text for mc #%s' % (i, n)
+                answer['answer_text'] = 'Question %s text for mc #%s' % (i, n)
                 answer['id'] = m_hash(answer)
 
                 answers.append(answer)
