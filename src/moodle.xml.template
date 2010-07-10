@@ -272,6 +272,44 @@
             </ANSWERS>
           </QUESTION>
           {% endfor %}
+          {% for truefalse_question in course.questions.truefalse %}
+          <QUESTION>
+            <ID>{{ truefalse_question.id }}</ID>
+            <PARENT>0</PARENT>
+            <NAME>{{ truefalse_question.name }}</NAME>
+            <QUESTIONTEXT>{{ truefalse_question.text }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <IMAGE></IMAGE>
+            <GENERALFEEDBACK>{{ truefalse_question.general_feedback }}</GENERALFEEDBACK>
+            <DEFAULTGRADE>1</DEFAULTGRADE>
+            <PENALTY>0</PENALTY>
+            <QTYPE>truefalse</QTYPE>
+            <LENGTH>1</LENGTH>
+            <STAMP>{{ truefalse_question.stamp }}</STAMP>
+            <VERSION>{{ truefalse_question.stamp }}</VERSION>
+            <HIDDEN>0</HIDDEN>
+            <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
+            <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
+            <TRUEFALSE>
+                <TRUEANSWER>{{ truefalse_question.true_answer_id }}</TRUEANSWER>
+                <FALSEANSWER>{{ truefalse_question.false_answer_id }}</FALSEANSWER>
+            </TRUEFALSE>
+            <ANSWERS>
+              <ANSWER>
+                <ID>{{ truefalse_question.true_answer_id }}</ID>
+                <ANSWER_TEXT>True</ANSWER_TEXT>
+                <FRACTION>{{ truefalse_question.true_points }}</FRACTION>
+                <FEEDBACK>{{ truefalse_question.true_feedback }}</FEEDBACK>
+              </ANSWER>
+              <ANSWER>
+                <ID>{{ truefalse_question.false_answer_id }}</ID>
+                <ANSWER_TEXT>False</ANSWER_TEXT>
+                <FRACTION>{{ truefalse_question.false_points }}</FRACTION>
+                <FEEDBACK>{{ truefalse_question.false_feedback }}</FEEDBACK>
+              </ANSWER>
+            </ANSWERS>
+          </QUESTION>
+          {% endfor %}
         </QUESTIONS>
       </QUESTION_CATEGORY>
     </QUESTION_CATEGORIES>

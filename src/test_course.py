@@ -123,6 +123,30 @@ class TestCourse(object):
 
         self.questions['essay'] = essay_questions
 
+    def add_questions_truefalse(self):
+        truefalse_questions = []
+
+        for n in xrange(2):
+            tf_question = {}
+
+            tf_question['name'] = 'True/False Question #%s' % (n + 1)
+            tf_question['text'] = 'Text for truefalse question #%s' % (n + 1)
+            tf_question['stamp'] = generate_stamp()
+            tf_question['id'] = m_hash(tf_question)
+            tf_question['general_feedback'] = 'Gen feedback for tf #%s' % (n + 1)
+
+            tf_question['true_answer_id'] = m_hash(tf_question)
+            tf_question['true_points'] = n
+            tf_question['true_feedback'] = '#%s true feedback' % (n + 1)
+
+            tf_question['false_answer_id'] = m_hash(tf_question)
+            tf_question['false_points'] = -n + 1
+            tf_question['false_feedback'] = '#%s false feedback' % (n + 1)
+
+            truefalse_questions.append(tf_question)
+
+        self.questions['truefalse'] = truefalse_questions
+
     """
     def add_quizzes(self):
         all_qs = []
