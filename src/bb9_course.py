@@ -167,9 +167,8 @@ class ShortResponseQuestion(EssayQuestion):
 
 class TrueFalseQuestion(Question):
     def _load(self):
-        e = self.xml.find('.//presentation//mat_formattedtext')
-
-        self.name = self.text = e.text
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
 
         query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
 
