@@ -159,9 +159,7 @@ class Question(ContentItem):
 
 class EssayQuestion(Question):
     def _load(self):
-        e = self.xml.find('.//presentation').find('.//mat_formattedtext')
-
-        self.name = self.text = e.text
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.answer_id = elixer.m_hash(self)
 
 class ShortResponseQuestion(EssayQuestion):
