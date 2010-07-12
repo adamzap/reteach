@@ -86,11 +86,11 @@ class Course(object):
                 self.questions['essay'].append(EssayQuestion(question))
             elif question_type == 'Short Response':
                 self.questions['essay'].append(ShortResponseQuestion(question))
+            elif question_type == 'True/False':
+                self.questions['truefalse'].append(TrueFalseQuestion(question))
             '''
             elif question_type == 'Either/Or':
                 self.questions['truefalse'].append(EitherOrQuestion(question))
-            elif question_type == 'True/False':
-                self.questions['truefalse'].append(TrueFalseQuestion(question))
             elif question_type == 'Multiple Choice':
                 self.questions['multichoice'].append(MultipleAnswerQuestion(question))
             elif question_type == 'Multiple Answer':
@@ -167,11 +167,27 @@ class EssayQuestion(Question):
 class ShortResponseQuestion(EssayQuestion):
     pass
 
-class EitherOrQuestion(Question):
-    def _load(self):
-        pass
-
 class TrueFalseQuestion(Question):
+    def _load(self):
+        e = self.xml.find('.//presentation//mat_formattedtext')
+
+        self.name = self.text = e.text
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        self.true_feedback = self.xml.find(query).text
+        self.false_feedback = self.xml.find(query.replace('"c', '"inc')).text
+
+        query = './/respcondition[@title="correct"]//varequal'
+
+        a = self.xml.find(query).text
+
+        self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
+
+        self.true_answer_id = elixer.m_hash(self)
+        self.false_answer_id = elixer.m_hash(self)
+
+class EitherOrQuestion(Question):
     def _load(self):
         pass
 
