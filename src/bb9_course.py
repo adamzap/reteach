@@ -1,13 +1,16 @@
 import os
+import time
 import zipfile
 
 from lxml import etree
 
 import elixer
 
-class Blackboard9Course(object):
+class Course(object):
     def __init__(self, archive_filename):
         self.archive_filename = archive_filename
+
+        self.timestamp = str(time.time()).split('.')[0]
 
         try:
             self.zip = zipfile.ZipFile(self.archive_filename)
@@ -52,12 +55,12 @@ class Blackboard9Course(object):
             if type == 'course/x-bb-coursesetting':
                 self.convert_course_settings(xml)
             elif type == 'resource/x-bb-discussionboard':
-                self.forums.append(BlackBoard9DiscussionBoard(xml))
+                self.forums.append(DiscussionBoard(xml))
             elif type == 'assessment/x-bb-qti-pool':
                 self.convert_questions(xml)
             elif type == 'assessment/x-bb-qti-test':
                 self.convert_questions(xml)
-                # self.tests.append(BlackBoard9Test(xml))
+                # self.tests.append(Test(xml))
             elif type == 'assessment/x-bb-qti-test':
                 # TODO
                 pass
@@ -80,25 +83,31 @@ class Blackboard9Course(object):
             question_type = question.find('.//bbmd_questiontype').text
 
             if question_type == 'Essay':
-                self.questions['essay'].append(BlackBoard9EssayQuestion(xml))
+                self.questions['essay'].append(EssayQuestion(xml))
+            '''
             elif question_type == 'Short Response':
-                self.questions['essay'].append(BlackBoard9ShortResponseQuestion(xml))
+                self.questions['essay'].append(ShortResponseQuestion(xml))
             elif question_type == 'Either/Or':
-                self.questions['truefalse'].append(BlackBoard9EitherOrQuestion(xml))
+                self.questions['truefalse'].append(EitherOrQuestion(xml))
             elif question_type == 'True/False':
-                self.questions['truefalse'].append(BlackBoard9TrueFalseQuestion(xml))
+                self.questions['truefalse'].append(TrueFalseQuestion(xml))
             elif question_type == 'Multiple Choice':
-                self.questions['multichoice'].append(BlackBoard9MultipleAnswerQuestion(xml))
+                self.questions['multichoice'].append(MultipleAnswerQuestion(xml))
             elif question_type == 'Multiple Answer':
-                self.questions['multichoice'].append(BlackBoard9MultipleChoiceQuestion(xml))
+                self.questions['multichoice'].append(MultipleChoiceQuestion(xml))
             elif question_type == 'Opinion Scale':
-                self.questions['multichoice'].append(BlackBoard9OpinionScaleQuestion(xml))
+                self.questions['multichoice'].append(OpinionScaleQuestion(xml))
             elif question_type == 'Matching':
-                self.questions['matching'].append(BlackBoard9MatchingQuestion(xml))
+                self.questions['matching'].append(MatchingQuestion(xml))
             elif question_type == 'Ordering':
-                self.questions['matching'].append(BlackBoard9Ordering(xml))
+                self.questions['matching'].append(Ordering(xml))
             elif question_type == 'Fill in the Blank':
-                self.questions['shortanswer'].append(BlackBoard9FillInTheBlankQuestion(xml))
+                self.questions['shortanswer'].append(FillInTheBlankQuestion(xml))
+            '''
+
+        self.quiz_category_id = elixer.m_hash(*tuple(self.questions)) # TODO
+        self.quiz_category_stamp = elixer.generate_stamp()
+
 
     def create_sections(self):
         # TODO
@@ -111,82 +120,88 @@ class Blackboard9Course(object):
 
         return [section]
 
-class BlackBoard9ContentItem(object):
+class ContentItem(object):
     def __init__(self, xml):
-        if self.__class__ == 'BlackBoard9ContentItem':
+        if self.__class__ == 'ContentItem':
             raise NotImplementedError('Do not instantiate base class')
 
         self.xml = xml
 
         self._load()
 
-class BlackBoard9Resource(BlackBoard9ContentItem):
+class Resource(ContentItem):
     def __init__(self, xml):
-        if self.__class__ == 'BlackBoard9Resource':
+        if self.__class__ == 'Resource':
             raise NotImplementedError('Do not instantiate base class')
 
-        BlackBoard9ContentItem.__init__(self, xml)
+        ContentItem.__init__(self, xml)
 
         self.section_num = 0 # TODO: Temporary
         self.id = elixer.m_hash(self)
         self.section_id = elixer.m_hash(self)
 
 
-class BlackBoard9DiscussionBoard(BlackBoard9Resource):
+class DiscussionBoard(Resource):
     def _load(self):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.introduction = self.xml.find('.//TEXT').text
 
 
-class BlackBoard9Question(BlackBoard9ContentItem):
+class Question(ContentItem):
     def __init__(self, xml):
-        if self.__class__ == 'BlackBoard9Question':
+        if self.__class__ == 'Question':
             raise NotImplementedError('Do not instantiate base class')
 
-        BlackBoard9ContentItem.__init__(self, xml)
+        ContentItem.__init__(self, xml)
 
-class BlackBoard9EssayQuestion(BlackBoard9Question):
+        self.stamp = elixer.generate_stamp()
+        self.id = elixer.m_hash(self)
+
+class EssayQuestion(Question):
+    def _load(self):
+        e = self.xml.find('.//presentation').find('.//mat_formattedtext')
+
+        self.name = self.text = e.text
+        self.answer_id = elixer.m_hash(self)
+
+class ShortResponseQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9ShortResponseQuestion(BlackBoard9Question):
+class EitherOrQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9EitherOrQuestion(BlackBoard9Question):
+class TrueFalseQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9TrueFalseQuestion(BlackBoard9Question):
+class MultipleAnswerQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9MultipleAnswerQuestion(BlackBoard9Question):
+class MultipleChoiceQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9MultipleChoiceQuestion(BlackBoard9Question):
+class OpinionScaleQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9OpinionScaleQuestion(BlackBoard9Question):
+class MatchingQuestion(Question):
     def _load(self):
         pass
 
-class BlackBoard9MatchingQuestion(BlackBoard9Question):
+class Ordering(Question):
     def _load(self):
         pass
 
-class BlackBoard9Ordering(BlackBoard9Question):
-    def _load(self):
-        pass
-
-class BlackBoard9FillInTheBlankQuestion(BlackBoard9Question):
+class FillInTheBlankQuestion(Question):
     def _load(self):
         pass
 
 
 if __name__ == '__main__':
-    course = Blackboard9Course('in.zip')
+    course = Course('in.zip')
 
     elixer.create_moodle_zip(course, 'out.zip')
