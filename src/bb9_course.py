@@ -83,26 +83,26 @@ class Course(object):
             question_type = question.find('.//bbmd_questiontype').text
 
             if question_type == 'Essay':
-                self.questions['essay'].append(EssayQuestion(xml))
-            '''
+                self.questions['essay'].append(EssayQuestion(question))
             elif question_type == 'Short Response':
-                self.questions['essay'].append(ShortResponseQuestion(xml))
+                self.questions['essay'].append(ShortResponseQuestion(question))
+            '''
             elif question_type == 'Either/Or':
-                self.questions['truefalse'].append(EitherOrQuestion(xml))
+                self.questions['truefalse'].append(EitherOrQuestion(question))
             elif question_type == 'True/False':
-                self.questions['truefalse'].append(TrueFalseQuestion(xml))
+                self.questions['truefalse'].append(TrueFalseQuestion(question))
             elif question_type == 'Multiple Choice':
-                self.questions['multichoice'].append(MultipleAnswerQuestion(xml))
+                self.questions['multichoice'].append(MultipleAnswerQuestion(question))
             elif question_type == 'Multiple Answer':
-                self.questions['multichoice'].append(MultipleChoiceQuestion(xml))
+                self.questions['multichoice'].append(MultipleChoiceQuestion(question))
             elif question_type == 'Opinion Scale':
-                self.questions['multichoice'].append(OpinionScaleQuestion(xml))
+                self.questions['multichoice'].append(OpinionScaleQuestion(question))
             elif question_type == 'Matching':
-                self.questions['matching'].append(MatchingQuestion(xml))
+                self.questions['matching'].append(MatchingQuestion(question))
             elif question_type == 'Ordering':
-                self.questions['matching'].append(Ordering(xml))
+                self.questions['matching'].append(Ordering(question))
             elif question_type == 'Fill in the Blank':
-                self.questions['shortanswer'].append(FillInTheBlankQuestion(xml))
+                self.questions['shortanswer'].append(FillInTheBlankQuestion(question))
             '''
 
         self.quiz_category_id = elixer.m_hash(*tuple(self.questions)) # TODO
@@ -164,9 +164,8 @@ class EssayQuestion(Question):
         self.name = self.text = e.text
         self.answer_id = elixer.m_hash(self)
 
-class ShortResponseQuestion(Question):
-    def _load(self):
-        pass
+class ShortResponseQuestion(EssayQuestion):
+    pass
 
 class EitherOrQuestion(Question):
     def _load(self):
