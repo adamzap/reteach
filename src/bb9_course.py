@@ -105,7 +105,6 @@ class Course(object):
         self.quiz_category_id = elixer.m_hash(*tuple(self.questions)) # TODO
         self.quiz_category_stamp = elixer.generate_stamp()
 
-
     def create_sections(self):
         # TODO
         section = {}
@@ -117,6 +116,7 @@ class Course(object):
 
         return [section]
 
+
 class ContentItem(object):
     def __init__(self, xml):
         if self.__class__ == 'ContentItem':
@@ -125,6 +125,7 @@ class ContentItem(object):
         self.xml = xml
 
         self._load()
+
 
 class Resource(ContentItem):
     def __init__(self, xml):
@@ -154,13 +155,16 @@ class Question(ContentItem):
         self.stamp = elixer.generate_stamp()
         self.id = elixer.m_hash(self)
 
+
 class EssayQuestion(Question):
     def _load(self):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.answer_id = elixer.m_hash(self)
 
+
 class ShortResponseQuestion(EssayQuestion):
     pass
+
 
 class TrueFalseQuestion(Question):
     def _load(self):
@@ -176,61 +180,28 @@ class TrueFalseQuestion(Question):
 
         self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
 
-        self.true_answer_id = elixer.m_hash(self)
-        self.false_answer_id = elixer.m_hash(self)
+        self.true_answer_id = elixer.m_hash(self, self.true_points)
+        self.false_answer_id = elixer.m_hash(self, self.false_points)
 
-class EitherOrQuestion(Question):
-    ans_types = {
-        'yes_no': ('Yes', 'No'),
-        'agree_disagree': ('Agree', 'Disagree'),
-        'right_wrong': ('Right', 'Wrong'),
-        'true_false': ('True', 'False')
-    }
-
-    def _load(self):
-        self.name = self.xml.find('.//presentation//mat_formattedtext').text
-        self.text = self.name
-        self.single_answer = 1
-
-        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
-
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
-
-        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
-
-        ans_type = a.split('.')[0]
-
-        true_points, false_points = (1, 0) if a.endswith('true') else (0, 1)
-
-        right_ans = {}
-        right_ans['answer_text'] = self.ans_types[ans_type][0]
-        right_ans['points'] = true_points
-        right_ans['feedback'] = cor_fb if true_points == 1 else incor_fb
-        right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
-
-        wrong_ans = {}
-        wrong_ans['answer_text'] = self.ans_types[ans_type][1]
-        wrong_ans['points'] = false_points
-        wrong_ans['feedback'] = cor_fb if false_points == 1 else incor_fb
-        wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
-
-        self.answers = (right_ans, wrong_ans)
-
-        self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
 class MultipleChoiceQuestion(Question):
     def _load(self):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.text = self.name
-        self.single_answer = 1
 
         query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
 
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+        self.cor_fb = self.xml.find(query).text
+        self.incor_fb = self.xml.find(query.replace('"c', '"inc')).text
 
         self.answers = []
+
+        self.build_answers()
+
+        self.answer_string = ','.join([str(a['id']) for a in self.answers])
+
+    def build_answers(self):
+        self.single_answer = 1
 
         answer_query = './/render_choice//response_label'
 
@@ -247,27 +218,58 @@ class MultipleChoiceQuestion(Question):
         for answer in self.answers:
             if answer['ident'] == correct_ident:
                 answer['points'] = 1
-                answer['feedback'] = cor_fb
+                answer['feedback'] = self.cor_fb
             else:
                 answer['points'] = 0
-                answer['feedback'] = incor_fb
+                answer['feedback'] = self.incor_fb
 
             answer['id'] = elixer.m_hash(answer)
 
-        self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
-class MultipleAnswerQuestion(Question):
-    def _load(self):
-        self.name = self.xml.find('.//presentation//mat_formattedtext').text
-        self.text = self.name
+class EitherOrQuestion(MultipleChoiceQuestion):
+    ans_types = {
+        'yes_no': ('Yes', 'No'),
+        'agree_disagree': ('Agree', 'Disagree'),
+        'right_wrong': ('Right', 'Wrong'),
+        'true_false': ('True', 'False')
+    }
+
+    def build_answers(self):
+        self.single_answer = 1
+
+        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
+
+        ans_type = a.split('.')[0]
+
+        true_points, false_points = (1, 0) if a.endswith('true') else (0, 1)
+
+        right_ans = {}
+        right_ans['answer_text'] = self.ans_types[ans_type][0]
+        right_ans['points'] = true_points
+
+        if true_points == 1:
+            right_ans['feedback'] = self.cor_fb
+        else:
+            right_ans['feedback'] = self.incor_fb
+
+        right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
+
+        wrong_ans = {}
+        wrong_ans['answer_text'] = self.ans_types[ans_type][1]
+        wrong_ans['points'] = false_points
+
+        if false_points == 1:
+            wrong_ans['feedback'] = self.cor_fb
+        else:
+            wrong_ans['feedback'] = self.incor_fb
+
+        wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
+
+        self.answers = (right_ans, wrong_ans)
+
+class MultipleAnswerQuestion(MultipleChoiceQuestion):
+    def build_answers(self):
         self.single_answer = 0
-
-        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
-
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
-
-        self.answers = []
 
         answer_query = './/render_choice//response_label'
 
@@ -284,25 +286,27 @@ class MultipleAnswerQuestion(Question):
         for answer in self.answers:
             if answer['ident'] in correct_idents:
                 answer['points'] = 1
-                answer['feedback'] = cor_fb
+                answer['feedback'] = self.cor_fb
             else:
                 answer['points'] = 0
-                answer['feedback'] = incor_fb
+                answer['feedback'] = self.incor_fb
 
             answer['id'] = elixer.m_hash(answer)
 
-        self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
 class OpinionScaleQuestion(MultipleChoiceQuestion):
     pass
+
 
 class MatchingQuestion(Question):
     def _load(self):
         pass
 
+
 class Ordering(Question):
     def _load(self):
         pass
+
 
 class FillInTheBlankQuestion(Question):
     def _load(self):
