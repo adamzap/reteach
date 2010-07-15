@@ -91,9 +91,9 @@ class Course(object):
                 self.questions['multichoice'].append(MultipleChoiceQuestion(question))
             elif question_type == 'Multiple Answer':
                 self.questions['multichoice'].append(MultipleAnswerQuestion(question))
-            '''
             elif question_type == 'Opinion Scale':
                 self.questions['multichoice'].append(OpinionScaleQuestion(question))
+            '''
             elif question_type == 'Matching':
                 self.questions['matching'].append(MatchingQuestion(question))
             elif question_type == 'Ordering':
@@ -293,9 +293,8 @@ class MultipleAnswerQuestion(Question):
 
         self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
-class OpinionScaleQuestion(Question):
-    def _load(self):
-        pass
+class OpinionScaleQuestion(MultipleChoiceQuestion):
+    pass
 
 class MatchingQuestion(Question):
     def _load(self):
