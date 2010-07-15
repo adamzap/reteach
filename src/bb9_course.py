@@ -88,9 +88,9 @@ class Course(object):
                 self.questions['essay'].append(ShortResponseQuestion(question))
             elif question_type == 'True/False':
                 self.questions['truefalse'].append(TrueFalseQuestion(question))
-            '''
             elif question_type == 'Either/Or':
-                self.questions['truefalse'].append(EitherOrQuestion(question))
+                self.questions['multichoice'].append(EitherOrQuestion(question))
+            '''
             elif question_type == 'Multiple Choice':
                 self.questions['multichoice'].append(MultipleAnswerQuestion(question))
             elif question_type == 'Multiple Answer':
@@ -175,9 +175,7 @@ class TrueFalseQuestion(Question):
         self.true_feedback = self.xml.find(query).text
         self.false_feedback = self.xml.find(query.replace('"c', '"inc')).text
 
-        query = './/respcondition[@title="correct"]//varequal'
-
-        a = self.xml.find(query).text
+        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
 
         self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
 
@@ -185,8 +183,44 @@ class TrueFalseQuestion(Question):
         self.false_answer_id = elixer.m_hash(self)
 
 class EitherOrQuestion(Question):
+    ans_types = {
+        'yes_no': ('Yes', 'No'),
+        'agree_disagree': ('Agree', 'Disagree'),
+        'right_wrong': ('Right', 'Wrong'),
+        'true_false': ('True', 'False')
+    }
+
     def _load(self):
-        pass
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
+        self.single_answer = 1
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        cor_fb = self.xml.find(query).text
+        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+
+        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
+
+        ans_type = a.split('.')[0]
+
+        true_points, false_points = (1, 0) if a.endswith('true') else (0, 1)
+
+        right_ans = {}
+        right_ans['answer_text'] = self.ans_types[ans_type][0]
+        right_ans['points'] = true_points
+        right_ans['feedback'] = cor_fb if true_points == 1 else incor_fb
+        right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
+
+        wrong_ans = {}
+        wrong_ans['answer_text'] = self.ans_types[ans_type][1]
+        wrong_ans['points'] = false_points
+        wrong_ans['feedback'] = cor_fb if false_points == 1 else incor_fb
+        wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
+
+        self.answers = (right_ans, wrong_ans)
+
+        self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
 class MultipleAnswerQuestion(Question):
     def _load(self):
