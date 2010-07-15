@@ -13,9 +13,9 @@ def m_hash(*args):
     elif isinstance(args[0], dict):
         the_hash = abs(hash(tuple(args[0].values())))
     else:
-        the_hash = abs(hash(tuple(args[0].__dict__.values())))
+        the_hash = abs(hash(args[0]))
 
-    return int(str(the_hash)[-8:])
+    return int(str(the_hash))
 
 def generate_stamp():
     chars = string.ascii_letters + string.digits
