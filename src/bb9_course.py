@@ -89,9 +89,9 @@ class Course(object):
                 self.questions['multichoice'].append(EitherOrQuestion(question))
             elif question_type == 'Multiple Choice':
                 self.questions['multichoice'].append(MultipleChoiceQuestion(question))
-            '''
             elif question_type == 'Multiple Answer':
                 self.questions['multichoice'].append(MultipleAnswerQuestion(question))
+            '''
             elif question_type == 'Opinion Scale':
                 self.questions['multichoice'].append(OpinionScaleQuestion(question))
             elif question_type == 'Matching':
@@ -258,7 +258,40 @@ class MultipleChoiceQuestion(Question):
 
 class MultipleAnswerQuestion(Question):
     def _load(self):
-        pass
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
+        self.single_answer = 0
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        cor_fb = self.xml.find(query).text
+        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+
+        self.answers = []
+
+        answer_query = './/render_choice//response_label'
+
+        for answer_elem in self.xml.findall(answer_query):
+            answer = {}
+            answer['ident'] = answer_elem.attrib['ident']
+            answer['answer_text'] = answer_elem.find('.//mat_formattedtext').text
+
+            self.answers.append(answer)
+
+        query = './/respcondition[@title="correct"]//and/varequal'
+        correct_idents = [a.text for a in self.xml.findall(query)]
+
+        for answer in self.answers:
+            if answer['ident'] in correct_idents:
+                answer['points'] = 1
+                answer['feedback'] = cor_fb
+            else:
+                answer['points'] = 0
+                answer['feedback'] = incor_fb
+
+            answer['id'] = elixer.m_hash(answer)
+
+        self.answer_string = ','.join([str(a['id']) for a in self.answers])
 
 class OpinionScaleQuestion(Question):
     def _load(self):
