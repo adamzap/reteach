@@ -93,9 +93,9 @@ class Course(object):
                 self.questions['multichoice'].append(MultipleAnswerQuestion(question))
             elif question_type == 'Opinion Scale':
                 self.questions['multichoice'].append(OpinionScaleQuestion(question))
-            '''
             elif question_type == 'Matching':
                 self.questions['matching'].append(MatchingQuestion(question))
+            '''
             elif question_type == 'Ordering':
                 self.questions['matching'].append(Ordering(question))
             elif question_type == 'Fill in the Blank':
@@ -300,7 +300,51 @@ class OpinionScaleQuestion(MultipleChoiceQuestion):
 
 class MatchingQuestion(Question):
     def _load(self):
-        pass
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        cor_fb = self.xml.find(query).text
+        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+
+        self.answers = []
+
+        ident_query = './/flow[@class="RESPONSE_BLOCK"]//response_lid'
+        text_query = './/flow[@class="RESPONSE_BLOCK"]//mat_formattedtext'
+
+        idents = self.xml.findall(ident_query)
+        texts = self.xml.findall(text_query)
+
+        for n, i in enumerate(self.xml.findall(ident_query)):
+            answer = {}
+            answer['ident'] = idents[n].attrib['ident']
+            answer['question_text'] = texts[n].text
+
+            labels = idents[n].findall('.//response_label')
+
+            answer['choice_idents'] = tuple([l.attrib['ident'] for l in labels])
+
+            self.answers.append(answer)
+
+        answer_query = './/flow[@class="RIGHT_MATCH_BLOCK"]//mat_formattedtext'
+
+        answer_texts = [a.text for a in self.xml.findall(answer_query)]
+
+        for match in self.xml.findall('.//varequal'):
+            question_ident = match.attrib['respident']
+            answer_ident = match.text
+
+            for answer in self.answers:
+                if answer['ident'] == question_ident:
+                    i = answer['choice_idents'].index(answer_ident)
+
+                    answer['answer_text'] = answer_texts[i]
+
+                    break
+
+        for answer in self.answers:
+            answer['id'] = elixer.m_hash(answer)
 
 
 class Ordering(Question):
