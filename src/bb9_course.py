@@ -61,9 +61,6 @@ class Course(object):
             elif type == 'assessment/x-bb-qti-test':
                 self.convert_questions(xml)
                 # self.tests.append(Test(xml))
-            elif type == 'assessment/x-bb-qti-test':
-                # TODO
-                pass
             else:
                 pass
 
