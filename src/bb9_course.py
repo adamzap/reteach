@@ -20,6 +20,7 @@ class Course(object):
         self.manifest = self.parse_manifest()
 
         self.forums = []
+        self.resources = []
 
         self.questions = {}
         self.questions['essay'] = []
@@ -56,6 +57,8 @@ class Course(object):
                 self.convert_course_settings(xml)
             elif type == 'resource/x-bb-discussionboard':
                 self.forums.append(DiscussionBoard(xml))
+            elif type == 'resource/x-bb-announcement':
+                self.resources.append(Announcement(xml))
             elif type == 'assessment/x-bb-qti-pool':
                 self.convert_questions(xml)
             elif type == 'assessment/x-bb-qti-test':
@@ -142,6 +145,12 @@ class DiscussionBoard(Resource):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.introduction = self.xml.find('.//TEXT').text
 
+class Announcement(Resource):
+    def _load(self):
+        self.name = self.xml.find('.//TITLE').attrib['value']
+        self.alltext = self.xml.find('.//TEXT').text
+        self.type = 'html'
+        self.reference = '2'
 
 class Question(ContentItem):
     def __init__(self, xml):
