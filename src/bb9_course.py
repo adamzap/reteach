@@ -107,15 +107,16 @@ class Course(object):
         self.quiz_category_stamp = elixer.generate_stamp()
 
     def create_sections(self):
-        # TODO
-        section = {}
+        sections = [
+            {'number': 0, 'summary': '<h2>Announcements</h2>'},
+            {'number': 1, 'summary': '<h2>Forums</h2>'},
+        ]
 
-        section['number'] = 0
-        section['summary'] = ''
-        section['visible'] = 1
-        section['id'] = abs(hash((section['number'], section['summary'])))
+        for section in sections:
+            section['visible'] = 1
+            section['id'] = abs(hash((section['number'], section['summary'])))
 
-        return [section]
+        return sections
 
 
 class ContentItem(object):
@@ -135,7 +136,6 @@ class Resource(ContentItem):
 
         ContentItem.__init__(self, xml)
 
-        self.section_num = 0 # TODO: Temporary
         self.id = elixer.m_hash(self)
         self.section_id = elixer.m_hash(self)
 
@@ -145,12 +145,16 @@ class DiscussionBoard(Resource):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.introduction = self.xml.find('.//TEXT').text
 
+        self.section_num = 1
+
 class Announcement(Resource):
     def _load(self):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.alltext = self.xml.find('.//TEXT').text
         self.type = 'html'
         self.reference = '2'
+
+        self.section_num = 0
 
 class Question(ContentItem):
     def __init__(self, xml):
