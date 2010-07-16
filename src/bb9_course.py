@@ -95,9 +95,9 @@ class Course(object):
                 self.questions['multichoice'].append(OpinionScaleQuestion(question))
             elif question_type == 'Matching':
                 self.questions['matching'].append(MatchingQuestion(question))
-            '''
             elif question_type == 'Ordering':
-                self.questions['matching'].append(Ordering(question))
+                self.questions['matching'].append(OrderingQuestion(question))
+            '''
             elif question_type == 'Fill in the Blank':
                 self.questions['shortanswer'].append(FillInTheBlankQuestion(question))
             '''
@@ -347,9 +347,39 @@ class MatchingQuestion(Question):
             answer['id'] = elixer.m_hash(answer)
 
 
-class Ordering(Question):
+class OrderingQuestion(Question):
     def _load(self):
-        pass
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        cor_fb = self.xml.find(query).text
+        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+
+        self.answers = []
+
+        answer_query = './/render_choice//response_label'
+
+        for answer_elem in self.xml.findall(answer_query):
+            answer = {}
+            answer['ident'] = answer_elem.attrib['ident']
+            answer['question_text'] = answer_elem.find('.//mat_formattedtext').text
+
+            self.answers.append(answer)
+
+        query = './/respcondition[@title="correct"]//varequal'
+        ordered_ident_elems = self.xml.findall(query)
+
+        for n, ordered_ident_elem in enumerate(ordered_ident_elems):
+            for answer in self.answers:
+                if answer['ident'] == ordered_ident_elem.text:
+                    answer['answer_text'] = n + 1
+
+                    break
+
+        for answer in self.answers:
+            answer['id'] = elixer.m_hash(answer)
 
 
 class FillInTheBlankQuestion(Question):
