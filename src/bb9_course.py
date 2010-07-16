@@ -97,10 +97,8 @@ class Course(object):
                 self.questions['matching'].append(MatchingQuestion(question))
             elif question_type == 'Ordering':
                 self.questions['matching'].append(OrderingQuestion(question))
-            '''
             elif question_type == 'Fill in the Blank':
                 self.questions['shortanswer'].append(FillInTheBlankQuestion(question))
-            '''
 
         self.quiz_category_id = elixer.m_hash(*tuple(self.questions)) # TODO
         self.quiz_category_stamp = elixer.generate_stamp()
@@ -384,7 +382,23 @@ class OrderingQuestion(Question):
 
 class FillInTheBlankQuestion(Question):
     def _load(self):
-        pass
+        self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
+
+        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
+
+        cor_fb = self.xml.find(query).text
+        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+
+        self.answers = []
+
+        for answer_text in [e.text for e in self.xml.findall('.//varequal')]:
+            answer = {}
+            answer['answer_text'] = answer_text
+            answer['points'] = 1
+            answer['id'] = elixer.m_hash(answer)
+
+            self.answers.append(answer)
 
 
 if __name__ == '__main__':
