@@ -63,13 +63,15 @@ class Course(object):
                 self.forums.append(DiscussionBoard(xml))
             elif type == 'resource/x-bb-announcement':
                 self.resources.append(Announcement(xml))
-            elif type == 'assessment/x-bb-qti-pool':
-                self.convert_questions(xml)
             elif type == 'assessment/x-bb-qti-test':
                 quiz_questions = self.convert_questions(xml)
                 self.quizzes.append(Test(xml, quiz_questions))
-            else:
-                pass
+            elif type == 'assessment/x-bb-qti-survey':
+                quiz_questions = self.convert_questions(xml)
+                self.quizzes.append(Survey(xml, quiz_questions))
+            elif type == 'assessment/x-bb-qti-pool':
+                quiz_questions = self.convert_questions(xml)
+                self.quizzes.append(Pool(xml, quiz_questions))
 
     def convert_course_settings(self, xml):
         self.fullname = xml.find('.//TITLE').attrib['value']
@@ -170,6 +172,7 @@ class Announcement(Resource):
 
         self.section_num = 0
 
+
 class Test(Resource):
     def __init__(self, xml, quiz_questions):
         Resource.__init__(self, xml)
@@ -198,6 +201,15 @@ class Test(Resource):
         self.intro = 'something' if self.intro == '<br /><br />' else self.intro
 
         self.section_num = 2
+
+
+class Survey(Test):
+    pass
+
+
+class Pool(Test):
+    pass
+
 
 class Question(ContentItem):
     def __init__(self, xml):
