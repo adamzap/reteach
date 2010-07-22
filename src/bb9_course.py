@@ -21,6 +21,7 @@ class Course(object):
 
         self.forums = []
         self.resources = []
+        self.quizzes = []
 
         self.questions = {}
         self.questions['essay'] = []
@@ -32,6 +33,9 @@ class Course(object):
         self.convert_resources()
 
         self.sections = self.create_sections()
+
+        self.quiz_category_stamp = elixer.generate_stamp()
+        self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
 
     def parse_manifest(self):
         # TODO: Improve this? I'm removing namespaces because I don't want to
@@ -62,8 +66,8 @@ class Course(object):
             elif type == 'assessment/x-bb-qti-pool':
                 self.convert_questions(xml)
             elif type == 'assessment/x-bb-qti-test':
-                self.convert_questions(xml)
-                # self.tests.append(Test(xml))
+                quiz_questions = self.convert_questions(xml)
+                self.quizzes.append(Test(xml, quiz_questions))
             else:
                 pass
 
@@ -78,6 +82,8 @@ class Course(object):
 
     def convert_questions(self, xml):
         questions = xml.findall('.//item')
+
+        old_question_ids = [q.id for q in sum(self.questions.values(), [])]
 
         for question in questions:
             question_type = question.find('.//bbmd_questiontype').text
@@ -103,13 +109,21 @@ class Course(object):
             elif question_type == 'Fill in the Blank':
                 self.questions['shortanswer'].append(FillInTheBlankQuestion(question))
 
-        self.quiz_category_id = elixer.m_hash(*tuple(self.questions)) # TODO
-        self.quiz_category_stamp = elixer.generate_stamp()
+        all_questions = sum(self.questions.values(), [])
+
+        all_question_ids = [q.id for q in all_questions]
+
+        new_question_ids = [q for q in all_question_ids if q not in old_question_ids]
+
+        quiz_questions = [q for q in all_questions if q.id in new_question_ids]
+
+        return quiz_questions
 
     def create_sections(self):
         sections = [
             {'number': 0, 'summary': '<h2>Announcements</h2>'},
             {'number': 1, 'summary': '<h2>Forums</h2>'},
+            {'number': 2, 'summary': '<h2>Quizzes</h2>'},
         ]
 
         for section in sections:
@@ -155,6 +169,35 @@ class Announcement(Resource):
         self.reference = '2'
 
         self.section_num = 0
+
+class Test(Resource):
+    def __init__(self, xml, quiz_questions):
+        Resource.__init__(self, xml)
+
+        self.questions = quiz_questions
+        self.question_string = ','.join([str(q.id) for q in self.questions])
+
+    def _load(self):
+        self.name = self.xml.find('.//assessment').attrib['title']
+
+        self.stamp = elixer.generate_stamp()
+
+        self.category_id = elixer.m_hash(self.name, self.stamp)
+
+        query = './/presentation_material//mat_formattedtext'
+        description = self.xml.find(query).text
+
+        query = './/rubric[@view="All"]//mat_formattedtext'
+        instructions = self.xml.find(query).text
+
+        description = '' if not description else description
+        instructions = '' if not instructions else instructions
+
+        self.intro = description + '<br /><br />' + instructions
+
+        self.intro = 'something' if self.intro == '<br /><br />' else self.intro
+
+        self.section_num = 2
 
 class Question(ContentItem):
     def __init__(self, xml):

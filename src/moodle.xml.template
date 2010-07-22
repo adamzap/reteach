@@ -419,6 +419,20 @@
           {% endfor %}
         </QUESTIONS>
       </QUESTION_CATEGORY>
+      {% for quiz in course.quizzes %}
+      <QUESTION_CATEGORY>
+        <ID>{{ quiz.category_id }}</ID>
+        <NAME>Default for {{ quiz.name }} </NAME>
+        <INFO>The default category for questions shared in context '{{ quiz.name }}'.</INFO>
+        <CONTEXT>
+          <LEVEL>module</LEVEL>
+          <INSTANCE>{{ quiz.section_id }}</INSTANCE>
+        </CONTEXT>
+        <STAMP>{{ quiz.stamp }}</STAMP>
+        <PARENT>0</PARENT>
+        <SORTORDER>999</SORTORDER>
+      </QUESTION_CATEGORY>
+      {% endfor %}
     </QUESTION_CATEGORIES>
     {% endif %}
      <GRADEBOOK/>
@@ -428,7 +442,7 @@
         <ID>{{ quiz.id }}</ID>
         <MODTYPE>quiz</MODTYPE>
         <NAME>{{ quiz.name }}</NAME>
-        <INTRO>{{ quiz.intro }}</INTRO>
+        <INTRO>{{ quiz.intro|escape }}</INTRO>
         <TIMEOPEN>0</TIMEOPEN>
         <TIMECLOSE>0</TIMECLOSE>
         <OPTIONFLAGS>1</OPTIONFLAGS>
@@ -441,7 +455,7 @@
         <QUESTIONSPERPAGE>0</QUESTIONSPERPAGE>
         <SHUFFLEQUESTIONS>0</SHUFFLEQUESTIONS>
         <SHUFFLEANSWERS>1</SHUFFLEANSWERS>
-        <QUESTIONS>{{ quiz.question_string }}</QUESTIONS>
+        <QUESTIONS>{{ quiz.question_string }},0</QUESTIONS>
         <SUMGRADES>1</SUMGRADES>
         <GRADE>10</GRADE>
         <TIMECREATED>{{ course.timestamp }}</TIMECREATED>
@@ -463,15 +477,7 @@
           {% endfor %}
         </QUESTION_INSTANCES>
         {% endif %}
-        <FEEDBACKS>
-          <FEEDBACK>
-            <ID>{{ quiz.feedback_id }}</ID>
-            <QUIZID>{{ quiz.id }}</QUIZID>
-            <FEEDBACKTEXT></FEEDBACKTEXT>
-            <MINGRADE>0</MINGRADE>
-            <MAXGRADE>11</MAXGRADE>
-          </FEEDBACK>
-        </FEEDBACKS>
+        <FEEDBACKS/>
       </MOD>
       {% endfor %}
       {% for forum in course.forums %}
