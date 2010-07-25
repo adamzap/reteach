@@ -1,6 +1,8 @@
 import os
 import time
+import shutil
 import zipfile
+import subprocess
 
 from lxml import etree
 
@@ -38,6 +40,8 @@ class Course(object):
 
         self.quiz_category_stamp = elixer.generate_stamp()
         self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
+
+        self.zip.close()
 
     def parse_manifest(self):
         # TODO: Improve this? I'm removing namespaces because I don't want to
@@ -544,8 +548,42 @@ class FillInTheBlankQuestion(Question):
 
             self.answers.append(answer)
 
+def create_moodle_zip(blackboard_zip_fname, out_name):
+    try:
+        shutil.rmtree('elixer_tmp')
+        shutil.rmtree('course_files')
+    except OSError:
+        pass
+
+    course = Course(blackboard_zip_fname)
+
+    moodle_zip = zipfile.ZipFile(out_name, 'w')
+
+    moodle_xml_str = elixer.convert(course)
+
+    moodle_zip.writestr('moodle.xml', moodle_xml_str)
+
+    err_fh = open(os.path.devnull, 'w')
+
+    command = ('unzip %s -d elixer_tmp' % blackboard_zip_fname).split(' ')
+    subprocess.Popen(command, stdout=err_fh, stderr=err_fh).communicate()
+
+    # TODO: os.path.walk ?
+    for f in os.listdir('elixer_tmp'):
+        if f.startswith('res') and os.path.isdir(os.path.join('elixer_tmp', f)):
+            for inner_file in os.listdir(os.path.join('elixer_tmp', f)):
+                res_num = f.replace('res', '')
+                fixed_filename = elixer.fix_filename(inner_file, res_num)
+
+                blackboard_filename = os.path.join('elixer_tmp', f, inner_file)
+
+                moodle_filename = os.path.join('course_files', fixed_filename)
+
+                moodle_zip.write(blackboard_filename, moodle_filename)
+
+    shutil.rmtree('elixer_tmp')
+
+    moodle_zip.close()
 
 if __name__ == '__main__':
-    course = Course('in.zip')
-
-    elixer.create_moodle_zip(course, 'out.zip')
+    create_moodle_zip('in.zip', 'out.zip')

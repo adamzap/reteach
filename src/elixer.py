@@ -41,13 +41,9 @@ def fix_filename(filename, res_num):
 
     return (ext + '.' + res_num[::-1] + '_' + name)[::-1]
 
-def create_moodle_zip(course, out_name):
+def convert(course):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
 
     moodle_xml_str = xml_template.render(course=course)
 
-    moodle_zip = zipfile.ZipFile(out_name, 'w')
-
-    moodle_zip.writestr('moodle.xml', moodle_xml_str)
-
-    moodle_zip.close()
+    return moodle_xml_str
