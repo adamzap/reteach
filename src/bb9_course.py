@@ -218,7 +218,7 @@ class Document(Resource):
 
             # TODO: Indention via folders
             if self.xml.find('.//PARENTID').attrib['value'] == '{unset id}':
-                pass
+                self.make_label = False
         else:
             self.type = 'html'
 
