@@ -22,6 +22,7 @@ class Course(object):
         self.forums = []
         self.resources = []
         self.quizzes = []
+        self.resources = []
 
         self.questions = {}
         self.questions['essay'] = []
@@ -72,6 +73,11 @@ class Course(object):
             elif type == 'assessment/x-bb-qti-pool':
                 quiz_questions = self.convert_questions(xml)
                 self.quizzes.append(Pool(xml, quiz_questions))
+            elif type == 'resource/x-bb-document':
+                if resource.attrib['title'] == '--TOP--':
+                    continue
+
+                self.resources.append(Document(xml))
 
     def convert_course_settings(self, xml):
         self.fullname = xml.find('.//TITLE').attrib['value']
@@ -126,6 +132,7 @@ class Course(object):
             {'number': 0, 'summary': '<h2>Announcements</h2>'},
             {'number': 1, 'summary': '<h2>Forums</h2>'},
             {'number': 2, 'summary': '<h2>Quizzes</h2>'},
+            {'number': 3, 'summary': '<h2>Resources</h2>'},
         ]
 
         for section in sections:
@@ -172,6 +179,14 @@ class Announcement(Resource):
 
         self.section_num = 0
 
+class Document(Resource):
+    def _load(self):
+        self.content_id = self.xml.getroot().attrib['id']
+        self.name = self.xml.find('.//TITLE').attrib['value']
+        self.alltext = self.xml.find('.//TEXT').text
+        self.type = 'html'
+
+        self.section_num = 3
 
 class Test(Resource):
     def __init__(self, xml, quiz_questions):
