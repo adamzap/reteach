@@ -232,8 +232,10 @@ class Document(Resource):
 
         fname = elixer.fix_filename(orig_name, self.res_num)
 
-        f_link = '<a href = "$@FILEPHP@$/%s" title = %s>%s' % ((fname,) * 3)
-        f_link = 'Attached File: ' + f_link
+        link_name = file_elem.find('.//LINKNAME').attrib['value']
+
+        f_link = '<a href = "$@FILEPHP@$/%s" title = %s>' % ((fname,) * 2)
+        f_link = 'Attached File: ' + f_link + '%s</a>' % link_name
 
         self.alltext = '<br /><br />'.join([self.alltext, f_link])
 
