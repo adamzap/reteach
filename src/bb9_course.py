@@ -23,6 +23,7 @@ class Course(object):
         self.resources = []
         self.quizzes = []
         self.resources = []
+        self.labels = []
 
         self.questions = {}
         self.questions['essay'] = []
@@ -74,10 +75,13 @@ class Course(object):
                 quiz_questions = self.convert_questions(xml)
                 self.quizzes.append(Pool(xml, quiz_questions))
             elif type == 'resource/x-bb-document':
-                if resource.attrib['title'] == '--TOP--':
-                    continue
+                document = Document(xml)
 
-                self.resources.append(Document(xml))
+                if not document.ignore:
+                    self.resources.append(document)
+
+                if document.make_label:
+                    self.labels.append(Label(document.name))
 
     def convert_course_settings(self, xml):
         self.fullname = xml.find('.//TITLE').attrib['value']
@@ -184,7 +188,45 @@ class Document(Resource):
         self.content_id = self.xml.getroot().attrib['id']
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.alltext = self.xml.find('.//TEXT').text
-        self.type = 'html'
+        self.ignore = False
+        self.make_label = False
+
+        content_handler = self.xml.find('.//CONTENTHANDLER').attrib['value']
+
+        ignored_handlers = (
+            'resource/x-bb-module-page',
+            'resource/x-bb-courselink'
+        )
+
+        folder_handlers = ('resource/x-bb-folder', 'resource/x-bb-lesson')
+
+        if content_handler == 'resource/x-bb-externallink':
+            self.type = 'file'
+            self.reference = self.xml.find('.//URL').attrib['value']
+        elif content_handler in ignored_handlers:
+            self.ignore = True
+        elif content_handler in folder_handlers):
+            self.ignore = True
+            self.make_label = True
+
+            # TODO: Indention via folders
+            if self.xml.find('.//PARENTID').attrib['value'] == '{unset id}':
+                pass
+        else:
+            self.type = 'html'
+
+        self.section_num = 3
+
+    def handle_file(self):
+        for a_file in self.xml.findall('.//FILE'):
+
+
+class Label(Resource):
+    def __init__(self, name):
+        self.name = self.content = name
+
+        self.id = elixer.m_hash(self)
+        self.section_id = elixer.m_hash(self)
 
         self.section_num = 3
 
