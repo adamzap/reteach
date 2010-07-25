@@ -26,6 +26,21 @@ def generate_stamp():
 
     return '+'.join([host_part, date_part, random_part])
 
+def fix_filename(filename, res_num):
+    '''In:  internet.mp3, Out: internet_res_num.mp3'''
+
+    filename = filename.replace(' ', '_')
+
+    if not res_num:
+        return filename
+
+    if '.' not in filename:
+        return filename + '_' + res_num
+
+    ext, name = filename[::-1].split('.', 1)
+
+    return (ext + '.' + res_num[::-1] + '_' + name)[::-1]
+
 def create_moodle_zip(course, out_name):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
 

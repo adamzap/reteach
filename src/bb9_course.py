@@ -57,6 +57,8 @@ class Course(object):
             dat_name = resource.attrib['file']
             xml = etree.parse(self.zip.open(dat_name))
 
+            res_num = dat_name.replace('res', '').replace('.dat', '')
+
             type = resource.attrib['type']
 
             if type == 'course/x-bb-coursesetting':
@@ -75,7 +77,7 @@ class Course(object):
                 quiz_questions = self.convert_questions(xml)
                 self.quizzes.append(Pool(xml, quiz_questions))
             elif type == 'resource/x-bb-document':
-                document = Document(xml)
+                document = Document(xml, res_num)
 
                 if not document.ignore:
                     self.resources.append(document)
@@ -184,6 +186,11 @@ class Announcement(Resource):
         self.section_num = 0
 
 class Document(Resource):
+    def __init__(self, xml, res_num):
+        self.res_num = res_num
+
+        Resource.__init__(self, xml)
+
     def _load(self):
         self.content_id = self.xml.getroot().attrib['id']
         self.name = self.xml.find('.//TITLE').attrib['value']
@@ -205,7 +212,7 @@ class Document(Resource):
             self.reference = self.xml.find('.//URL').attrib['value']
         elif content_handler in ignored_handlers:
             self.ignore = True
-        elif content_handler in folder_handlers):
+        elif content_handler in folder_handlers:
             self.ignore = True
             self.make_label = True
 
@@ -215,10 +222,20 @@ class Document(Resource):
         else:
             self.type = 'html'
 
+        for file_elem in self.xml.findall('.//FILE'):
+            self.handle_file(file_elem)
+
         self.section_num = 3
 
-    def handle_file(self):
-        for a_file in self.xml.findall('.//FILE'):
+    def handle_file(self, file_elem):
+        orig_name = file_elem.find('.//NAME').text
+
+        fname = elixer.fix_filename(orig_name, self.res_num)
+
+        f_link = '<a href = "$@FILEPHP@$/%s" title = %s>%s' % ((fname,) * 3)
+        f_link = 'Attached File: ' + f_link
+
+        self.alltext = '<br /><br />'.join([self.alltext, f_link])
 
 
 class Label(Resource):
