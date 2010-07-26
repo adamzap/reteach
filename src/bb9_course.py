@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import base64
 import shutil
@@ -321,6 +322,8 @@ class Question(ContentItem):
             raise NotImplementedError('Do not instantiate base class')
 
         ContentItem.__init__(self, xml)
+
+        self.name = re.sub(r'<.*?>', '', self.name).strip()
 
         self.stamp = elixer.generate_stamp()
         self.id = elixer.m_hash(self)

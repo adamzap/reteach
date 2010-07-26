@@ -249,8 +249,8 @@
             <ID>{{ essay_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ essay_question.name }}</NAME>
-            <QUESTIONTEXT>{{ essay_question.text }}</QUESTIONTEXT>
-            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <QUESTIONTEXT>{{ essay_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE></IMAGE>
             <GENERALFEEDBACK></GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
@@ -277,8 +277,8 @@
             <ID>{{ truefalse_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ truefalse_question.name }}</NAME>
-            <QUESTIONTEXT>{{ truefalse_question.text }}</QUESTIONTEXT>
-            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <QUESTIONTEXT>{{ truefalse_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE></IMAGE>
             <GENERALFEEDBACK>{{ truefalse_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
@@ -315,8 +315,8 @@
             <ID>{{ shortanswer_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ shortanswer_question.name }}</NAME>
-            <QUESTIONTEXT>{{ shortanswer_question.text }}</QUESTIONTEXT>
-            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <QUESTIONTEXT>{{ shortanswer_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE></IMAGE>
             <GENERALFEEDBACK>{{ shortanswer_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
@@ -349,8 +349,8 @@
             <ID>{{ multichoice_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ multichoice_question.name }}</NAME>
-            <QUESTIONTEXT>{{ multichoice_question.text }}</QUESTIONTEXT>
-            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <QUESTIONTEXT>{{ multichoice_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE></IMAGE>
             <GENERALFEEDBACK>{{ multichoice_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
@@ -389,8 +389,8 @@
             <ID>{{ matching_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ matching_question.name }}</NAME>
-            <QUESTIONTEXT>{{ matching_question.text }}</QUESTIONTEXT>
-            <QUESTIONTEXTFORMAT>0</QUESTIONTEXTFORMAT>
+            <QUESTIONTEXT>{{ matching_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE></IMAGE>
             <GENERALFEEDBACK>{{ matching_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
