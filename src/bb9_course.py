@@ -68,24 +68,24 @@ class Course(object):
 
             res_num = dat_name.replace('res', '').replace('.dat', '')
 
-            type = resource.attrib['type']
+            res_type = resource.attrib['type']
 
-            if type == 'course/x-bb-coursesetting':
+            if res_type == 'course/x-bb-coursesetting':
                 self.convert_course_settings(xml)
-            elif type == 'resource/x-bb-discussionboard':
+            elif res_type == 'resource/x-bb-discussionboard':
                 self.forums.append(DiscussionBoard(xml))
-            elif type == 'resource/x-bb-announcement':
+            elif res_type == 'resource/x-bb-announcement':
                 self.resources.append(Announcement(xml))
-            elif type == 'assessment/x-bb-qti-test':
+            elif res_type == 'assessment/x-bb-qti-test':
                 quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Test(xml, quiz_questions))
-            elif type == 'assessment/x-bb-qti-survey':
+            elif res_type == 'assessment/x-bb-qti-survey':
                 quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Survey(xml, quiz_questions))
-            elif type == 'assessment/x-bb-qti-pool':
+            elif res_type == 'assessment/x-bb-qti-pool':
                 quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Pool(xml, quiz_questions))
-            elif type == 'resource/x-bb-document':
+            elif res_type == 'resource/x-bb-document':
                 document = Document(xml, res_num)
 
                 if not document.ignore:
@@ -483,11 +483,6 @@ class MatchingQuestion(Question):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.text = self.name
 
-        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
-
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
-
         self.answers = []
 
         ident_query = './/flow[@class="RESPONSE_BLOCK"]//response_lid'
@@ -532,11 +527,6 @@ class OrderingQuestion(Question):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.text = self.name
 
-        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
-
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
-
         self.answers = []
 
         answer_query = './/render_choice//response_label'
@@ -566,11 +556,6 @@ class FillInTheBlankQuestion(Question):
     def _load(self):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.text = self.name
-
-        query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
-
-        cor_fb = self.xml.find(query).text
-        incor_fb = self.xml.find(query.replace('"c', '"inc')).text
 
         self.answers = []
 
