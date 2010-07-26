@@ -1,6 +1,8 @@
 import os
 import time
+import base64
 import shutil
+import urllib
 import zipfile
 import subprocess
 
@@ -40,6 +42,8 @@ class Course(object):
 
         self.quiz_category_stamp = elixer.generate_stamp()
         self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
+
+        self.has_questions = any(self.questions.values())
 
         self.zip.close()
 
@@ -202,6 +206,9 @@ class Document(Resource):
         self.ignore = False
         self.make_label = False
 
+        if self.alltext and '@X@EmbeddedFile' in self.alltext:
+            self.alltext = self.handle_embedded_file(self.alltext)
+
         content_handler = self.xml.find('.//CONTENTHANDLER').attrib['value']
 
         ignored_handlers = (
@@ -243,6 +250,23 @@ class Document(Resource):
 
         self.alltext = '<br /><br />'.join([self.alltext, f_link])
 
+    def handle_embedded_file(self, text):
+        before, rest = text.split('@X@EmbeddedFile.location@X@')
+
+        filename, after = rest.split('"', 1)
+
+        after = '"' + after
+
+        filename = elixer.fix_filename(filename, self.res_num)
+
+        return before + '$@FILEPHP@$/' + filename + after
+
+    def handle_file_encoding(self, filename):
+        ext, filename = [s[::-1] for s in filename[::-1].split('.', 1)]
+
+        filename = '!' + base64.b16encode(urllib.unquote(filename)) + '.' + ext
+
+        return filename.lower()
 
 class Label(Resource):
     def __init__(self, name):
@@ -568,18 +592,23 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
     command = ('unzip %s -d elixer_tmp' % blackboard_zip_fname).split(' ')
     subprocess.Popen(command, stdout=err_fh, stderr=err_fh).communicate()
 
-    # TODO: os.path.walk ?
-    for f in os.listdir('elixer_tmp'):
-        if f.startswith('res') and os.path.isdir(os.path.join('elixer_tmp', f)):
-            for inner_file in os.listdir(os.path.join('elixer_tmp', f)):
-                res_num = f.replace('res', '')
-                fixed_filename = elixer.fix_filename(inner_file, res_num)
+    skip_parent = False
 
-                blackboard_filename = os.path.join('elixer_tmp', f, inner_file)
+    for root, dirs, files in os.walk('elixer_tmp'):
+        if not skip_parent:
+            skip_parent = True
+            continue
 
-                moodle_filename = os.path.join('course_files', fixed_filename)
+        for fname in files:
+            res_num = root.split(os.sep, 1)[1].split(os.sep)[0].replace('res', '')
 
-                moodle_zip.write(blackboard_filename, moodle_filename)
+            fixed_filename = elixer.fix_filename(fname, res_num)
+
+            blackboard_filename = os.path.join(root, fname)
+
+            moodle_filename = os.path.join('course_files', fixed_filename)
+
+            moodle_zip.write(blackboard_filename, moodle_filename)
 
     shutil.rmtree('elixer_tmp')
 

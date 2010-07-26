@@ -231,7 +231,7 @@
       </SECTION>
       {% endfor %}
     </SECTIONS>
-    {% if course.questions %}
+    {% if course.has_questions %}
     <QUESTION_CATEGORIES>
       <QUESTION_CATEGORY>
         <ID>{{ course.quiz_category_id }}</ID>
