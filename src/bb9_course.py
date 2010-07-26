@@ -77,13 +77,13 @@ class Course(object):
             elif type == 'resource/x-bb-announcement':
                 self.resources.append(Announcement(xml))
             elif type == 'assessment/x-bb-qti-test':
-                quiz_questions = self.convert_questions(xml)
+                quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Test(xml, quiz_questions))
             elif type == 'assessment/x-bb-qti-survey':
-                quiz_questions = self.convert_questions(xml)
+                quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Survey(xml, quiz_questions))
             elif type == 'assessment/x-bb-qti-pool':
-                quiz_questions = self.convert_questions(xml)
+                quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Pool(xml, quiz_questions))
             elif type == 'resource/x-bb-document':
                 document = Document(xml, res_num)
@@ -103,34 +103,36 @@ class Course(object):
         self.primary_category = category_elems[0].attrib['value']
         self.secondary_category = category_elems[1].attrib['value']
 
-    def convert_questions(self, xml):
+    def convert_questions(self, xml, res_num):
         questions = xml.findall('.//item')
 
         old_question_ids = [q.id for q in sum(self.questions.values(), [])]
+
+        # TODO: PEP8
 
         for question in questions:
             question_type = question.find('.//bbmd_questiontype').text
 
             if question_type == 'Essay':
-                self.questions['essay'].append(EssayQuestion(question))
+                self.questions['essay'].append(EssayQuestion(question, res_num))
             elif question_type == 'Short Response':
-                self.questions['essay'].append(ShortResponseQuestion(question))
+                self.questions['essay'].append(ShortResponseQuestion(question, res_num))
             elif question_type == 'True/False':
-                self.questions['truefalse'].append(TrueFalseQuestion(question))
+                self.questions['truefalse'].append(TrueFalseQuestion(question, res_num))
             elif question_type == 'Either/Or':
-                self.questions['multichoice'].append(EitherOrQuestion(question))
+                self.questions['multichoice'].append(EitherOrQuestion(question, res_num))
             elif question_type == 'Multiple Choice':
-                self.questions['multichoice'].append(MultipleChoiceQuestion(question))
+                self.questions['multichoice'].append(MultipleChoiceQuestion(question, res_num))
             elif question_type == 'Multiple Answer':
-                self.questions['multichoice'].append(MultipleAnswerQuestion(question))
+                self.questions['multichoice'].append(MultipleAnswerQuestion(question, res_num))
             elif question_type == 'Opinion Scale':
-                self.questions['multichoice'].append(OpinionScaleQuestion(question))
+                self.questions['multichoice'].append(OpinionScaleQuestion(question, res_num))
             elif question_type == 'Matching':
-                self.questions['matching'].append(MatchingQuestion(question))
+                self.questions['matching'].append(MatchingQuestion(question, res_num))
             elif question_type == 'Ordering':
-                self.questions['matching'].append(OrderingQuestion(question))
+                self.questions['matching'].append(OrderingQuestion(question, res_num))
             elif question_type == 'Fill in the Blank':
-                self.questions['shortanswer'].append(FillInTheBlankQuestion(question))
+                self.questions['shortanswer'].append(FillInTheBlankQuestion(question, res_num))
 
         all_questions = sum(self.questions.values(), [])
 
@@ -317,13 +319,18 @@ class Pool(Test):
 
 
 class Question(ContentItem):
-    def __init__(self, xml):
+    def __init__(self, xml, res_num):
         if self.__class__ == 'Question':
             raise NotImplementedError('Do not instantiate base class')
 
         ContentItem.__init__(self, xml)
 
         self.name = re.sub(r'<.*?>', '', self.name).strip()
+
+        query = './/flow[@class="FILE_BLOCK"]//matapplication'
+
+        for elem in self.xml.findall(query):
+            self.image = elixer.fix_filename(elem.attrib['label'], res_num)
 
         self.stamp = elixer.generate_stamp()
         self.id = elixer.m_hash(self)

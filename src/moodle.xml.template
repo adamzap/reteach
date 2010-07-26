@@ -251,7 +251,7 @@
             <NAME>{{ essay_question.name }}</NAME>
             <QUESTIONTEXT>{{ essay_question.text|escape }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
-            <IMAGE></IMAGE>
+            <IMAGE>{{ essay_question.image }}</IMAGE>
             <GENERALFEEDBACK></GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
@@ -279,7 +279,7 @@
             <NAME>{{ truefalse_question.name }}</NAME>
             <QUESTIONTEXT>{{ truefalse_question.text|escape }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
-            <IMAGE></IMAGE>
+            <IMAGE>{{ truefalse_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ truefalse_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
@@ -317,7 +317,7 @@
             <NAME>{{ shortanswer_question.name }}</NAME>
             <QUESTIONTEXT>{{ shortanswer_question.text|escape }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
-            <IMAGE></IMAGE>
+            <IMAGE>{{ shortanswer_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ shortanswer_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
@@ -351,7 +351,7 @@
             <NAME>{{ multichoice_question.name }}</NAME>
             <QUESTIONTEXT>{{ multichoice_question.text|escape }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
-            <IMAGE></IMAGE>
+            <IMAGE>{{ multichoice_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ multichoice_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
@@ -391,7 +391,7 @@
             <NAME>{{ matching_question.name }}</NAME>
             <QUESTIONTEXT>{{ matching_question.text|escape }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
-            <IMAGE></IMAGE>
+            <IMAGE>{{ matching_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ matching_question.general_feedback }}</GENERALFEEDBACK>
             <DEFAULTGRADE>1</DEFAULTGRADE>
             <PENALTY>0</PENALTY>
