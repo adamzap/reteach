@@ -265,9 +265,9 @@
             <ANSWERS>
               <ANSWER>
                 <ID>{{ essay_question.answer_id }}</ID>
-                <ANSWER_TEXT>{{ essay_question.feedback }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ essay_question.feedback|escape }}</ANSWER_TEXT>
                 <FRACTION>0</FRACTION>
-                <FEEDBACK>{{ essay_question.feedback }}</FEEDBACK>
+                <FEEDBACK>{{ essay_question.feedback|escape }}</FEEDBACK>
               </ANSWER>
             </ANSWERS>
           </QUESTION>
@@ -336,7 +336,7 @@
               {% for answer in shortanswer_question.answers %}
               <ANSWER>
                 <ID>{{ answer.id }}</ID>
-                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ answer.answer_text|escape }}</ANSWER_TEXT>
                 <FRACTION>{{ answer.points }}</FRACTION>
                 <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
               </ANSWER>
@@ -376,7 +376,7 @@
               {% for answer in multichoice_question.answers %}
               <ANSWER>
                 <ID>{{ answer.id }}</ID>
-                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ answer.answer_text|escape }}</ANSWER_TEXT>
                 <FRACTION>{{ answer.points }}</FRACTION>
                 <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
               </ANSWER>

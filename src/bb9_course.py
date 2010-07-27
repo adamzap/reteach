@@ -180,8 +180,12 @@ class Course(object):
 
                     res_num = child.attrib['identifierref'].replace('res', '')
 
-                    res_nums_to_assets[res_num].indent = indent
-                    res_nums_to_assets[res_num].section_num = section_num
+                    # TODO: Hackish
+                    try:
+                        res_nums_to_assets[res_num].indent = indent
+                        res_nums_to_assets[res_num].section_num = section_num
+                    except KeyError:
+                        continue
 
                     inner_children = child.getchildren()
 
@@ -278,7 +282,6 @@ class Document(Resource):
             self.ignore = True
             self.make_label = True
 
-            # TODO: Indention via folders
             if self.xml.find('.//PARENTID').attrib['value'] == '{unset id}':
                 self.make_label = False
         else:
