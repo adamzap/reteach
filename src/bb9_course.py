@@ -38,8 +38,8 @@ class Course(object):
 
         self.convert_resources()
 
-        self.sections = self.create_content_areas()
-        self.sections += self.create_sections()
+        self.sections = self.create_default_sections()
+        self.sections += self.create_content_areas()
 
         self.quiz_category_stamp = elixer.generate_stamp()
         self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
@@ -144,7 +144,7 @@ class Course(object):
 
         return quiz_questions
 
-    def create_sections(self):
+    def create_content_areas(self):
         sections = []
 
         res_nums_to_assets = {}
@@ -193,7 +193,7 @@ class Course(object):
 
         return sections
 
-    def create_content_areas(self):
+    def create_default_sections(self):
         sections = [
             {'number': 0, 'summary': '<h2>Announcements</h2>'},
             {'number': 1, 'summary': '<h2>Forums</h2>'},
