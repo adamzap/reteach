@@ -159,7 +159,7 @@
             <INSTANCE>{{ quiz.id }}</INSTANCE>
             <ADDED>{{ course.timestamp }}</ADDED>
             <SCORE>0</SCORE>
-            <INDENT>0</INDENT>
+            <INDENT>{{ quiz.indent }}</INDENT>
             <VISIBLE>1</VISIBLE>
             <GROUPMODE>0</GROUPMODE>
             <GROUPINGID>0</GROUPINGID>
@@ -178,7 +178,7 @@
             <INSTANCE>{{ forum.id }}</INSTANCE>
             <ADDED>{{ course.timestamp }}</ADDED>
             <SCORE>0</SCORE>
-            <INDENT>0</INDENT>
+            <INDENT>{{ forum.indent }}</INDENT>
             <VISIBLE>1</VISIBLE>
             <GROUPMODE>0</GROUPMODE>
             <GROUPINGID>0</GROUPINGID>
@@ -197,7 +197,7 @@
             <INSTANCE>{{ label.id }}</INSTANCE>
             <ADDED>{{ course.timestamp }}</ADDED>
             <SCORE>0</SCORE>
-            <INDENT>0</INDENT>
+            <INDENT>{{ label.indent }}</INDENT>
             <VISIBLE>1</VISIBLE>
             <GROUPMODE>0</GROUPMODE>
             <GROUPINGID>0</GROUPINGID>
@@ -216,7 +216,7 @@
             <INSTANCE>{{ resource.id }}</INSTANCE>
             <ADDED>{{ course.timestamp }}</ADDED>
             <SCORE>0</SCORE>
-            <INDENT>0</INDENT>
+            <INDENT>{{ resource.indent }}</INDENT>
             <VISIBLE>1</VISIBLE>
             <GROUPMODE>0</GROUPMODE>
             <GROUPINGID>0</GROUPINGID>

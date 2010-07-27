@@ -25,7 +25,6 @@ class Course(object):
         self.manifest = self.parse_manifest()
 
         self.forums = []
-        self.resources = []
         self.quizzes = []
         self.resources = []
         self.labels = []
@@ -39,7 +38,8 @@ class Course(object):
 
         self.convert_resources()
 
-        self.sections = self.create_sections()
+        self.sections = self.create_content_areas()
+        self.sections += self.create_sections()
 
         self.quiz_category_stamp = elixer.generate_stamp()
         self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
@@ -73,18 +73,18 @@ class Course(object):
             if res_type == 'course/x-bb-coursesetting':
                 self.convert_course_settings(xml)
             elif res_type == 'resource/x-bb-discussionboard':
-                self.forums.append(DiscussionBoard(xml))
+                self.forums.append(DiscussionBoard(xml, res_num))
             elif res_type == 'resource/x-bb-announcement':
-                self.resources.append(Announcement(xml))
+                self.resources.append(Announcement(xml, res_num))
             elif res_type == 'assessment/x-bb-qti-test':
                 quiz_questions = self.convert_questions(xml, res_num)
-                self.quizzes.append(Test(xml, quiz_questions))
+                self.quizzes.append(Test(xml, quiz_questions, res_num))
             elif res_type == 'assessment/x-bb-qti-survey':
                 quiz_questions = self.convert_questions(xml, res_num)
-                self.quizzes.append(Survey(xml, quiz_questions))
+                self.quizzes.append(Survey(xml, quiz_questions, res_num))
             elif res_type == 'assessment/x-bb-qti-pool':
                 quiz_questions = self.convert_questions(xml, res_num)
-                self.quizzes.append(Pool(xml, quiz_questions))
+                self.quizzes.append(Pool(xml, quiz_questions, res_num))
             elif res_type == 'resource/x-bb-document':
                 document = Document(xml, res_num)
 
@@ -92,7 +92,7 @@ class Course(object):
                     self.resources.append(document)
 
                 if document.make_label:
-                    self.labels.append(Label(document.name))
+                    self.labels.append(Label(document.name, res_num))
 
     def convert_course_settings(self, xml):
         self.fullname = xml.find('.//TITLE').attrib['value']
@@ -145,11 +145,59 @@ class Course(object):
         return quiz_questions
 
     def create_sections(self):
+        sections = []
+
+        res_nums_to_assets = {}
+
+        for asset in self.resources + self.labels:
+            res_nums_to_assets[asset.res_num] = asset
+
+        for content_area in self.manifest.find('.//organization').iterchildren():
+            section_num = len(self.sections) + len(sections)
+
+            dat_name = content_area.attrib['identifierref'] + '.dat'
+            res_xml = etree.parse(self.zip.open(dat_name))
+
+            if not res_xml.find('.//TARGETTYPE').attrib['value'] == 'CONTENT':
+                continue
+
+            title = res_xml.find('.//LABEL').attrib['value']
+
+            section = {}
+            section['number'] = section_num
+            section['summary'] = '<h2>' + title + '</h2>'
+            section['visible'] = 1
+            section['toc_id'] = res_xml.find
+            section['id'] = abs(hash((section['number'], section['summary'])))
+
+            sections.append(section)
+
+            def recurse(elem, indent):
+                children = elem.getchildren()
+
+                for child in children:
+                    if not child.tag == 'item':
+                        continue
+
+                    res_num = child.attrib['identifierref'].replace('res', '')
+
+                    res_nums_to_assets[res_num].indent = indent
+                    res_nums_to_assets[res_num].section_num = section_num
+
+                    inner_children = child.getchildren()
+
+                    if len(inner_children) > 1:
+                        recurse(child, indent + 1)
+
+            recurse(content_area.getchildren()[1], 0)
+
+        return sections
+
+    def create_content_areas(self):
         sections = [
             {'number': 0, 'summary': '<h2>Announcements</h2>'},
             {'number': 1, 'summary': '<h2>Forums</h2>'},
             {'number': 2, 'summary': '<h2>Quizzes</h2>'},
-            {'number': 3, 'summary': '<h2>Resources</h2>'},
         ]
 
         for section in sections:
@@ -170,9 +218,12 @@ class ContentItem(object):
 
 
 class Resource(ContentItem):
-    def __init__(self, xml):
+    def __init__(self, xml, res_num):
         if self.__class__ == 'Resource':
             raise NotImplementedError('Do not instantiate base class')
+
+        self.res_num = res_num
+        self.indent = 0
 
         ContentItem.__init__(self, xml)
 
@@ -197,11 +248,6 @@ class Announcement(Resource):
         self.section_num = 0
 
 class Document(Resource):
-    def __init__(self, xml, res_num):
-        self.res_num = res_num
-
-        Resource.__init__(self, xml)
-
     def _load(self):
         self.content_id = self.xml.getroot().attrib['id']
         self.name = self.xml.find('.//TITLE').attrib['value']
@@ -251,6 +297,10 @@ class Document(Resource):
         f_link = '<a href = "$@FILEPHP@$/%s" title = %s>' % ((fname,) * 2)
         f_link = 'Attached File: ' + f_link + '%s</a>' % link_name
 
+        # TODO
+        if not self.alltext:
+            self.alltext = ''
+
         self.alltext = '<br /><br />'.join([self.alltext, f_link])
 
     def handle_embedded_file(self, text):
@@ -272,8 +322,9 @@ class Document(Resource):
         return filename.lower()
 
 class Label(Resource):
-    def __init__(self, name):
+    def __init__(self, name, res_num):
         self.name = self.content = name
+        self.res_num = res_num
 
         self.id = elixer.m_hash(self)
         self.section_id = elixer.m_hash(self)
@@ -281,8 +332,8 @@ class Label(Resource):
         self.section_num = 3
 
 class Test(Resource):
-    def __init__(self, xml, quiz_questions):
-        Resource.__init__(self, xml)
+    def __init__(self, xml, quiz_questions, res_num):
+        Resource.__init__(self, xml, res_num)
 
         self.questions = quiz_questions
         self.question_string = ','.join([str(q.id) for q in self.questions])
@@ -339,6 +390,7 @@ class Question(ContentItem):
 class EssayQuestion(Question):
     def _load(self):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
+        self.text = self.name
         self.answer_id = elixer.m_hash(self)
 
 
