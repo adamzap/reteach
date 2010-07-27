@@ -161,13 +161,12 @@ class Course(object):
             if not res_xml.find('.//TARGETTYPE').attrib['value'] == 'CONTENT':
                 continue
 
-            title = res_xml.find('.//LABEL').attrib['value']
+            title = content_area.getchildren()[0].text
 
             section = {}
             section['number'] = section_num
             section['summary'] = '<h2>' + title + '</h2>'
             section['visible'] = 1
-            section['toc_id'] = res_xml.find
             section['id'] = abs(hash((section['number'], section['summary'])))
 
             sections.append(section)
