@@ -255,7 +255,10 @@ class Document(Resource):
         self.ignore = False
         self.make_label = False
 
-        if self.alltext and '@X@EmbeddedFile' in self.alltext:
+        if not self.alltext:
+            self.alltext = ''
+
+        while '@X@EmbeddedFile' in self.alltext:
             self.alltext = self.handle_embedded_file(self.alltext)
 
         content_handler = self.xml.find('.//CONTENTHANDLER').attrib['value']
@@ -297,14 +300,10 @@ class Document(Resource):
         f_link = '<a href = "$@FILEPHP@$/%s" title = %s>' % ((fname,) * 2)
         f_link = 'Attached File: ' + f_link + '%s</a>' % link_name
 
-        # TODO
-        if not self.alltext:
-            self.alltext = ''
-
         self.alltext = '<br /><br />'.join([self.alltext, f_link])
 
     def handle_embedded_file(self, text):
-        before, rest = text.split('@X@EmbeddedFile.location@X@')
+        before, rest = text.split('@X@EmbeddedFile.location@X@', 1)
 
         filename, after = rest.split('"', 1)
 
@@ -630,7 +629,7 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
 
     moodle_zip = zipfile.ZipFile(out_name, 'w')
 
-    moodle_xml_str = elixer.convert(course)
+    moodle_xml_str = elixer.convert(course).encode('utf-8')
 
     moodle_zip.writestr('moodle.xml', moodle_xml_str)
 
