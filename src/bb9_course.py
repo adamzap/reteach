@@ -155,7 +155,12 @@ class Course(object):
         for content_area in self.manifest.find('.//organization').iterchildren():
             section_num = len(self.sections) + len(sections)
 
-            dat_name = content_area.attrib['identifierref'] + '.dat'
+            # TODO: Avoiding staffinfo
+            try:
+                dat_name = content_area.attrib['identifierref'] + '.dat'
+            except KeyError:
+                continue
+
             res_xml = etree.parse(self.zip.open(dat_name))
 
             if not res_xml.find('.//TARGETTYPE').attrib['value'] == 'CONTENT':
@@ -261,7 +266,7 @@ class Document(Resource):
         if not self.alltext:
             self.alltext = ''
 
-        while '@X@EmbeddedFile' in self.alltext:
+        while '@X@EmbeddedFile.location@X@' in self.alltext:
             self.alltext = self.handle_embedded_file(self.alltext)
 
         content_handler = self.xml.find('.//CONTENTHANDLER').attrib['value']
@@ -351,7 +356,7 @@ class Test(Resource):
 
         self.intro = description + '<br /><br />' + instructions
 
-        self.intro = 'something' if self.intro == '<br /><br />' else self.intro
+        self.intro = '' if self.intro == '<br /><br />' else self.intro
 
         self.section_num = 2
 
