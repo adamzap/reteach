@@ -3,7 +3,7 @@ import re
 import time
 import base64
 import shutil
-import urllib
+import urllib2
 import zipfile
 import subprocess
 
@@ -293,7 +293,7 @@ class Document(Resource):
     def handle_file(self, file_elem):
         orig_name = file_elem.find('.//NAME').text
 
-        fname = elixer.fix_filename(orig_name, self.res_num)
+        fname = urllib2.quote(elixer.fix_filename(orig_name, self.res_num))
 
         link_name = file_elem.find('.//LINKNAME').attrib['value']
 
@@ -313,12 +313,6 @@ class Document(Resource):
 
         return before + '$@FILEPHP@$/' + filename + after
 
-    def handle_file_encoding(self, filename):
-        ext, filename = [s[::-1] for s in filename[::-1].split('.', 1)]
-
-        filename = '!' + base64.b16encode(urllib.unquote(filename)) + '.' + ext
-
-        return filename.lower()
 
 class Label(Resource):
     def __init__(self, name, res_num):
@@ -618,6 +612,7 @@ class FillInTheBlankQuestion(Question):
 
             self.answers.append(answer)
 
+
 def create_moodle_zip(blackboard_zip_fname, out_name):
     try:
         shutil.rmtree('elixer_tmp')
@@ -645,16 +640,24 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
             skip_parent = True
             continue
 
-        for fname in files:
+        for bb_fname in files:
+            moodle_fname = bb_fname
+
+            if bb_fname.startswith('!'):
+                ext, fname = [s[::-1] for s in bb_fname[1:][::-1].split('.', 1)]
+
+                moodle_fname = (base64.b16decode(fname.upper()) + '.' + ext)
+                moodle_fname = urllib2.unquote(moodle_fname)
+
             res_num = root.split(os.sep, 1)[1].split(os.sep)[0].replace('res', '')
 
-            fixed_filename = elixer.fix_filename(fname, res_num)
+            fixed_filename = elixer.fix_filename(moodle_fname, res_num)
 
-            blackboard_filename = os.path.join(root, fname)
+            bb_fname = os.path.join(root, bb_fname)
 
-            moodle_filename = os.path.join('course_files', fixed_filename)
+            moodle_fname = os.path.join('course_files', fixed_filename)
 
-            moodle_zip.write(blackboard_filename, moodle_filename)
+            moodle_zip.write(bb_fname, moodle_fname)
 
     shutil.rmtree('elixer_tmp')
 
