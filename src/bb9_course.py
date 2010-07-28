@@ -76,6 +76,8 @@ class Course(object):
                 self.forums.append(DiscussionBoard(xml, res_num))
             elif res_type == 'resource/x-bb-announcement':
                 self.resources.append(Announcement(xml, res_num))
+            elif res_type == 'resource/x-bb-staffinfo':
+                self.resources.append(StaffInfo(xml, res_num))
             elif res_type == 'assessment/x-bb-qti-test':
                 quiz_questions = self.convert_questions(xml, res_num)
                 self.quizzes.append(Test(xml, quiz_questions, res_num))
@@ -206,6 +208,7 @@ class Course(object):
             {'number': 0, 'summary': '<h2>Announcements</h2>'},
             {'number': 1, 'summary': '<h2>Forums</h2>'},
             {'number': 2, 'summary': '<h2>Quizzes</h2>'},
+            {'number': 3, 'summary': '<h2>Contacts</h2>'},
         ]
 
         for section in sections:
@@ -246,14 +249,65 @@ class DiscussionBoard(Resource):
 
         self.section_num = 1
 
+
 class Announcement(Resource):
     def _load(self):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.alltext = self.xml.find('.//TEXT').text
         self.type = 'html'
-        self.reference = '2'
+        self.reference = '2' # TODO
 
         self.section_num = 0
+
+
+class StaffInfo(Resource):
+    def _load(self):
+        parts = ('FORMALTITLE', 'GIVEN', 'FAMILY')
+        data_parts = [self.xml.find('.//%s' % p).attrib['value'] for p in parts]
+
+        self.name = ' '.join([p for p in data_parts if p])
+
+        email = self.xml.find('.//EMAIL').attrib['value']
+        phone = self.xml.find('.//PHONE').attrib['value']
+        hours = self.xml.find('.//HOURS').attrib['value']
+        address = self.xml.find('.//ADDRESS').attrib['value']
+        homepage = self.xml.find('.//HOMEPAGE').attrib['value']
+        image = self.xml.find('.//IMAGE').attrib['value']
+        notes = self.xml.find('.//TEXT').text
+
+        image = elixer.fix_filename(image, self.res_num)
+
+        self.type = 'html'
+
+        self.alltext =  '''
+            <table border = "0" width = "50%%">
+              <tr>
+                <td colspan = "2"><h3>%s</h3></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ul>
+                    <li><b>Email</b>: %s</li>
+                    <li><b>Work Phone</b>: %s</li>
+                    <li><b>Office Location</b>: %s</li>
+                    <li><b>Office Hours</b>: %s</li>
+                    <li><b>Personal Link</b>: %s</li>
+                  </ul>
+                </td>
+                <td>
+                  <img src = "$@FILEPHP@$/%s" alt="" width="150" height="150"/>
+                </td>
+              </tr>
+              <tr>
+                <td colspan = "2">%s</td>
+              </tr>
+            </table>
+        ''' % (self.name, email, phone, hours, address, homepage, image, notes)
+
+        formal_title = self.xml.find('.//FORMALTITLE')
+        self.section_num = 3
+
 
 class Document(Resource):
     def _load(self):
