@@ -146,6 +146,27 @@ class Course(object):
 
         return quiz_questions
 
+    def create_default_sections(self):
+        sections = [
+            {'number': 0, 'summary': ''},
+            {'number': 1, 'summary': '<h2>Announcements</h2>'},
+            {'number': 2, 'summary': '<h2>Forums</h2>'},
+            {'number': 3, 'summary': '<h2>Quizzes</h2>'},
+            {'number': 4, 'summary': '<h2>Contacts</h2>'},
+        ]
+
+        # TODO: Questionable
+        sections[1]['mods'] = [r for r in self.resources if isinstance(r, Announcement)]
+        sections[2]['mods'] = self.forums
+        sections[3]['mods'] = self.quizzes
+        sections[4]['mods'] = [r for r in self.resources if isinstance(r, StaffInfo)]
+
+        for section in sections:
+            section['visible'] = 1
+            section['id'] = abs(hash((section['number'], section['summary'])))
+
+        return sections
+
     def create_content_areas(self):
         sections = []
 
@@ -206,26 +227,6 @@ class Course(object):
 
         return sections
 
-    def create_default_sections(self):
-        sections = [
-            {'number': 0, 'summary': '<h2>Announcements</h2>'},
-            {'number': 1, 'summary': '<h2>Forums</h2>'},
-            {'number': 2, 'summary': '<h2>Quizzes</h2>'},
-            {'number': 3, 'summary': '<h2>Contacts</h2>'},
-        ]
-
-        # TODO: Questionable
-        sections[0]['mods'] = [r for r in self.resources if isinstance(r, Announcement)]
-        sections[1]['mods'] = self.forums
-        sections[2]['mods'] = self.quizzes
-        sections[3]['mods'] = [r for r in self.resources if isinstance(r, StaffInfo)]
-
-        for section in sections:
-            section['visible'] = 1
-            section['id'] = abs(hash((section['number'], section['summary'])))
-
-        return sections
-
 
 class ContentItem(object):
     def __init__(self, xml):
@@ -257,7 +258,6 @@ class DiscussionBoard(Resource):
         self.introduction = self.xml.find('.//TEXT').text
 
         self.type = 'forum'
-        self.section_num = 1
 
 
 class Announcement(Resource):
@@ -268,7 +268,6 @@ class Announcement(Resource):
         self.reference = '2' # TODO
 
         self.type = 'resource'
-        self.section_num = 0
 
 
 class StaffInfo(Resource):
@@ -319,7 +318,6 @@ class StaffInfo(Resource):
         formal_title = self.xml.find('.//FORMALTITLE')
 
         self.type = 'resource'
-        self.section_num = 3
 
 
 class Document(Resource):
@@ -363,7 +361,6 @@ class Document(Resource):
             self.handle_file(file_elem)
 
         self.type = 'resource'
-        self.section_num = 3
 
     def handle_file(self, file_elem):
         orig_name = file_elem.find('.//NAME').text
@@ -398,7 +395,6 @@ class Label(Resource):
         self.section_id = elixer.m_hash(self)
 
         self.type = 'label'
-        self.section_num = 3
 
 
 class Test(Resource):
@@ -429,7 +425,6 @@ class Test(Resource):
         self.intro = '' if self.intro == '<br /><br />' else self.intro
 
         self.type = 'quiz'
-        self.section_num = 2
 
 
 class Survey(Test):
