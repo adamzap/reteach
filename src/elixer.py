@@ -27,7 +27,7 @@ def generate_stamp():
     return '+'.join([host_part, date_part, random_part])
 
 def fix_filename(filename, res_num):
-    '''In:  internet.mp3, Out: internet_res_num.mp3'''
+    '''In: internet.mp3, Out: internet_res_num.mp3'''
 
     filename = filename.replace(' ', '_')
 
