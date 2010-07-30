@@ -25,16 +25,16 @@ class Course(object):
         self.manifest = self.parse_manifest()
 
         self.forums = []
+        self.labels = []
         self.quizzes = []
         self.resources = []
-        self.labels = []
 
         self.questions = {}
         self.questions['essay'] = []
+        self.questions['matching'] = []
         self.questions['truefalse'] = []
         self.questions['shortanswer'] = []
         self.questions['multichoice'] = []
-        self.questions['matching'] = []
 
         self.convert_resources()
 
