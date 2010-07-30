@@ -44,6 +44,7 @@ def fix_filename(filename, res_num):
 def convert(course):
     xml_template = jinja2.Template(open('moodle.xml.template', 'r').read())
 
-    moodle_xml_str = xml_template.render(course=course)
+    # jinja2's environment finalize wasn't working for some reason
+    moodle_xml_str = xml_template.render(course=course).replace('>None<', '><')
 
     return moodle_xml_str
