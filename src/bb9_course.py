@@ -510,6 +510,10 @@ class MultipleChoiceQuestion(Question):
             answer['ident'] = answer_elem.attrib['ident']
             answer['answer_text'] = answer_elem.find('.//mat_formattedtext').text
 
+            # Filter out blank choices
+            if not answer['answer_text']:
+                continue
+
             self.answers.append(answer)
 
         query = './/respcondition[@title="correct"]//varequal'
@@ -577,6 +581,10 @@ class MultipleAnswerQuestion(MultipleChoiceQuestion):
             answer = {}
             answer['ident'] = answer_elem.attrib['ident']
             answer['answer_text'] = answer_elem.find('.//mat_formattedtext').text
+
+            # Filter out blank choices
+            if not answer['answer_text']:
+                continue
 
             self.answers.append(answer)
 
