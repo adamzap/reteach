@@ -418,7 +418,15 @@
           {% endfor %}
         </QUESTION_INSTANCES>
         {% endif %}
-        <FEEDBACKS/>
+        <FEEDBACKS>
+          <FEEDBACK>
+            <ID>{{ quiz.feedback_id }}</ID>
+            <QUIZID>{{ quiz.id }}</QUIZID>
+            <FEEDBACKTEXT></FEEDBACKTEXT>
+            <MINGRADE>0</MINGRADE>
+            <MAXGRADE>11</MAXGRADE>
+          </FEEDBACK>
+        </FEEDBACKS>
       </MOD>
       {% endfor %}
       {% for forum in course.forums %}

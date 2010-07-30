@@ -403,6 +403,8 @@ class Test(Resource):
 
         self.questions = quiz_questions
         self.question_string = ','.join([str(q.id) for q in self.questions])
+        self.feedback_id = elixer.m_hash(self)
+
 
     def _load(self):
         self.name = self.xml.find('.//assessment').attrib['title']
