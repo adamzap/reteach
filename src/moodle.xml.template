@@ -184,8 +184,22 @@
         <STAMP>{{ course.quiz_category_stamp }}</STAMP>
         <PARENT>0</PARENT>
         <SORTORDER>999</SORTORDER>
+      </QUESTION_CATEGORY>
+      {% for quiz in course.quizzes %}
+      <QUESTION_CATEGORY>
+        <ID>{{ quiz.category_id }}</ID>
+        <NAME>Default for {{ quiz.name }}</NAME>
+        <INFO>The default category for questions shared in context '{{ quiz.name }}'.</INFO>
+        <CONTEXT>
+          <LEVEL>module</LEVEL>
+          <INSTANCE>{{ quiz.section_id }}</INSTANCE>
+        </CONTEXT>
+        <STAMP>{{ quiz.stamp }}</STAMP>
+        <PARENT>0</PARENT>
+        <SORTORDER>999</SORTORDER>
         <QUESTIONS>
           {% for essay_question in course.questions.essay %}
+            {% if essay_question.res_num == quiz.res_num %}
           <QUESTION>
             <ID>{{ essay_question.id }}</ID>
             <PARENT>0</PARENT>
@@ -212,8 +226,10 @@
               </ANSWER>
             </ANSWERS>
           </QUESTION>
+            {% endif %}
           {% endfor %}
           {% for truefalse_question in course.questions.truefalse %}
+            {% if truefalse_question.res_num == quiz.res_num %}
           <QUESTION>
             <ID>{{ truefalse_question.id }}</ID>
             <PARENT>0</PARENT>
@@ -250,8 +266,10 @@
               </ANSWER>
             </ANSWERS>
           </QUESTION>
+            {% endif %}
           {% endfor %}
           {% for shortanswer_question in course.questions.shortanswer %}
+            {% if shortanswer_question.res_num == quiz.res_num %}
           <QUESTION>
             <ID>{{ shortanswer_question.id }}</ID>
             <PARENT>0</PARENT>
@@ -284,8 +302,10 @@
               {% endfor %}
             </ANSWERS>
           </QUESTION>
+            {% endif %}
           {% endfor %}
           {% for multichoice_question in course.questions.multichoice %}
+            {% if multichoice_question.res_num == quiz.res_num %}
           <QUESTION>
             <ID>{{ multichoice_question.id }}</ID>
             <PARENT>0</PARENT>
@@ -324,8 +344,10 @@
               {% endfor %}
             </ANSWERS>
           </QUESTION>
+            {% endif %}
           {% endfor %}
           {% for matching_question in course.questions.matching %}
+            {% if matching_question.res_num == quiz.res_num %}
           <QUESTION>
             <ID>{{ matching_question.id }}</ID>
             <PARENT>0</PARENT>
@@ -357,21 +379,9 @@
               {% endfor %}
             </MATCHS>
           </QUESTION>
+            {% endif %}
           {% endfor %}
         </QUESTIONS>
-      </QUESTION_CATEGORY>
-      {% for quiz in course.quizzes %}
-      <QUESTION_CATEGORY>
-        <ID>{{ quiz.category_id }}</ID>
-        <NAME>Default for {{ quiz.name }} </NAME>
-        <INFO>The default category for questions shared in context '{{ quiz.name }}'.</INFO>
-        <CONTEXT>
-          <LEVEL>module</LEVEL>
-          <INSTANCE>{{ quiz.section_id }}</INSTANCE>
-        </CONTEXT>
-        <STAMP>{{ quiz.stamp }}</STAMP>
-        <PARENT>0</PARENT>
-        <SORTORDER>999</SORTORDER>
       </QUESTION_CATEGORY>
       {% endfor %}
     </QUESTION_CATEGORIES>

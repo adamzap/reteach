@@ -445,6 +445,7 @@ class Question(ContentItem):
         ContentItem.__init__(self, xml)
 
         self.name = re.sub(r'<.*?>', '', self.name).strip()
+        self.res_num = res_num
 
         query = './/flow[@class="FILE_BLOCK"]//matapplication'
 
