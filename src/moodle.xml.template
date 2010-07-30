@@ -151,15 +151,14 @@
         <SUMMARY>{{ section.summary|escape }}</SUMMARY>
         <VISIBLE>{{ section.visible }}</VISIBLE>
         <MODS>
-        {% for quiz in course.quizzes %}
-          {% if quiz.section_num == section.number %}
+        {% for mod in section.mods %}
           <MOD>
-            <ID>{{ quiz.section_id }}</ID>
-            <TYPE>quiz</TYPE>
-            <INSTANCE>{{ quiz.id }}</INSTANCE>
+            <ID>{{ mod.section_id }}</ID>
+            <TYPE>{{ mod.type }}</TYPE>
+            <INSTANCE>{{ mod.id }}</INSTANCE>
             <ADDED>{{ course.timestamp }}</ADDED>
             <SCORE>0</SCORE>
-            <INDENT>{{ quiz.indent }}</INDENT>
+            <INDENT>{{ mod.indent }}</INDENT>
             <VISIBLE>1</VISIBLE>
             <GROUPMODE>0</GROUPMODE>
             <GROUPINGID>0</GROUPINGID>
@@ -168,64 +167,6 @@
             <ROLES_OVERRIDES/>
             <ROLES_ASSIGNMENTS/>
           </MOD>
-          {% endif %}
-        {% endfor %}
-        {% for forum in course.forums %}
-          {% if forum.section_num == section.number %}
-          <MOD>
-            <ID>{{ forum.section_id }}</ID>
-            <TYPE>forum</TYPE>
-            <INSTANCE>{{ forum.id }}</INSTANCE>
-            <ADDED>{{ course.timestamp }}</ADDED>
-            <SCORE>0</SCORE>
-            <INDENT>{{ forum.indent }}</INDENT>
-            <VISIBLE>1</VISIBLE>
-            <GROUPMODE>0</GROUPMODE>
-            <GROUPINGID>0</GROUPINGID>
-            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
-            <IDNUMBER></IDNUMBER>
-            <ROLES_OVERRIDES/>
-            <ROLES_ASSIGNMENTS/>
-          </MOD>
-          {% endif %}
-        {% endfor %}
-        {% for label in course.labels %}
-          {% if label.section_num == section.number %}
-          <MOD>
-            <ID>{{ label.section_id }}</ID>
-            <TYPE>label</TYPE>
-            <INSTANCE>{{ label.id }}</INSTANCE>
-            <ADDED>{{ course.timestamp }}</ADDED>
-            <SCORE>0</SCORE>
-            <INDENT>{{ label.indent }}</INDENT>
-            <VISIBLE>1</VISIBLE>
-            <GROUPMODE>0</GROUPMODE>
-            <GROUPINGID>0</GROUPINGID>
-            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
-            <IDNUMBER>$@NULL@$</IDNUMBER>
-            <ROLES_OVERRIDES/>
-            <ROLES_ASSIGNMENTS/>
-          </MOD>
-          {% endif %}
-        {% endfor %}
-        {% for resource in course.resources %}
-          {% if resource.section_num == section.number %}
-          <MOD>
-            <ID>{{ resource.section_id }}</ID>
-            <TYPE>resource</TYPE>
-            <INSTANCE>{{ resource.id }}</INSTANCE>
-            <ADDED>{{ course.timestamp }}</ADDED>
-            <SCORE>0</SCORE>
-            <INDENT>{{ resource.indent }}</INDENT>
-            <VISIBLE>1</VISIBLE>
-            <GROUPMODE>0</GROUPMODE>
-            <GROUPINGID>0</GROUPINGID>
-            <GROUPMEMBERSONLY>0</GROUPMEMBERSONLY>
-            <IDNUMBER></IDNUMBER>
-            <ROLES_OVERRIDES/>
-            <ROLES_ASSIGNMENTS/>
-          </MOD>
-          {% endif %}
         {% endfor %}
         </MODS>
       </SECTION>
@@ -516,7 +457,7 @@
         <ID>{{ resource.id }}</ID>
         <MODTYPE>resource</MODTYPE>
         <NAME>{{ resource.name }}</NAME>
-        <TYPE>{{ resource.type }}</TYPE>
+        <TYPE>{{ resource.res_type }}</TYPE>
         <REFERENCE>{{ resource.reference }}</REFERENCE>
         <SUMMARY>{{ resource.summary|escape }}</SUMMARY>
         <ALLTEXT>{{ resource.alltext|escape }}</ALLTEXT>

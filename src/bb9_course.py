@@ -157,7 +157,7 @@ class Course(object):
         for content_area in self.manifest.find('.//organization').iterchildren():
             section_num = len(self.sections) + len(sections)
 
-            # TODO: Avoiding staffinfo
+            # Avoiding staffinfo
             try:
                 dat_name = content_area.attrib['identifierref'] + '.dat'
             except KeyError:
@@ -175,6 +175,7 @@ class Course(object):
             section['summary'] = '<h2>' + title + '</h2>'
             section['visible'] = 1
             section['id'] = abs(hash((section['number'], section['summary'])))
+            section['mods'] = []
 
             sections.append(section)
 
@@ -194,6 +195,8 @@ class Course(object):
                     except KeyError:
                         continue
 
+                    section['mods'].append(res_nums_to_assets[res_num])
+
                     inner_children = child.getchildren()
 
                     if len(inner_children) > 1:
@@ -210,6 +213,12 @@ class Course(object):
             {'number': 2, 'summary': '<h2>Quizzes</h2>'},
             {'number': 3, 'summary': '<h2>Contacts</h2>'},
         ]
+
+        # TODO: Questionable
+        sections[0]['mods'] = [r for r in self.resources if isinstance(r, Announcement)]
+        sections[1]['mods'] = self.forums
+        sections[2]['mods'] = self.quizzes
+        sections[3]['mods'] = [r for r in self.resources if isinstance(r, StaffInfo)]
 
         for section in sections:
             section['visible'] = 1
@@ -247,6 +256,7 @@ class DiscussionBoard(Resource):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.introduction = self.xml.find('.//TEXT').text
 
+        self.type = 'forum'
         self.section_num = 1
 
 
@@ -254,9 +264,10 @@ class Announcement(Resource):
     def _load(self):
         self.name = self.xml.find('.//TITLE').attrib['value']
         self.alltext = self.xml.find('.//TEXT').text
-        self.type = 'html'
+        self.res_type = 'html'
         self.reference = '2' # TODO
 
+        self.type = 'resource'
         self.section_num = 0
 
 
@@ -277,7 +288,7 @@ class StaffInfo(Resource):
 
         image = elixer.fix_filename(image, self.res_num)
 
-        self.type = 'html'
+        self.res_type = 'html'
 
         self.alltext =  '''
             <table border = "0" width = "50%%">
@@ -306,6 +317,8 @@ class StaffInfo(Resource):
         ''' % (self.name, email, phone, hours, address, homepage, image, notes)
 
         formal_title = self.xml.find('.//FORMALTITLE')
+
+        self.type = 'resource'
         self.section_num = 3
 
 
@@ -333,7 +346,7 @@ class Document(Resource):
         folder_handlers = ('resource/x-bb-folder', 'resource/x-bb-lesson')
 
         if content_handler == 'resource/x-bb-externallink':
-            self.type = 'file'
+            self.res_type = 'file'
             self.reference = self.xml.find('.//URL').attrib['value']
         elif content_handler in ignored_handlers:
             self.ignore = True
@@ -344,11 +357,12 @@ class Document(Resource):
             if self.xml.find('.//PARENTID').attrib['value'] == '{unset id}':
                 self.make_label = False
         else:
-            self.type = 'html'
+            self.res_type = 'html'
 
         for file_elem in self.xml.findall('.//FILE'):
             self.handle_file(file_elem)
 
+        self.type = 'resource'
         self.section_num = 3
 
     def handle_file(self, file_elem):
@@ -383,7 +397,9 @@ class Label(Resource):
         self.id = elixer.m_hash(self)
         self.section_id = elixer.m_hash(self)
 
+        self.type = 'label'
         self.section_num = 3
+
 
 class Test(Resource):
     def __init__(self, xml, quiz_questions, res_num):
@@ -412,6 +428,7 @@ class Test(Resource):
 
         self.intro = '' if self.intro == '<br /><br />' else self.intro
 
+        self.type = 'quiz'
         self.section_num = 2
 
 
