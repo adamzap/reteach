@@ -757,4 +757,4 @@ if __name__ == '__main__':
     elif len(sys.argv) == 3:
         blackboard_zip_name, moodle_zip_name = sys.argv[1], sys.argv[2]
 
-    create_moodle_zip('in.zip', 'out.zip')
+    create_moodle_zip(blackboard_zip_name, moodle_zip_name)
