@@ -365,7 +365,9 @@ class Document(Resource):
     def handle_file(self, file_elem):
         orig_name = file_elem.find('.//NAME').text
 
-        fname = urllib2.quote(elixer.fix_filename(orig_name, self.res_num))
+        fixed_name = elixer.fix_filename(orig_name, self.res_num)
+
+        fname = urllib2.quote(fixed_name.encode('utf-8'))
 
         link_name = file_elem.find('.//LINKNAME').attrib['value']
 
