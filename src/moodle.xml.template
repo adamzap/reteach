@@ -476,7 +476,7 @@
         <MODTYPE>resource</MODTYPE>
         <NAME>{{ resource.name }}</NAME>
         <TYPE>{{ resource.res_type }}</TYPE>
-        <REFERENCE>{{ resource.reference }}</REFERENCE>
+        <REFERENCE>{{ resource.reference|escape }}</REFERENCE>
         <SUMMARY>{{ resource.summary|escape }}</SUMMARY>
         <ALLTEXT>{{ resource.alltext|escape }}</ALLTEXT>
         <POPUP></POPUP>
