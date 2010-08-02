@@ -594,33 +594,51 @@ class EitherOrQuestion(MultipleChoiceQuestion):
     def build_answers(self):
         self.single_answer = 1
 
-        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
+        answer_query = './/respcondition[@title="correct"]//varequal'
+        answer_elem = self.xml.find(answer_query)
 
-        ans_type = a.split('.')[0]
+        if answer_elem is not None:
+            answer = answer_elem.text
 
-        true_points, false_points = (1, 0) if a.endswith('true') else (0, 1)
+            ans_type = answer.split('.')[0]
 
-        right_ans = {}
-        right_ans['answer_text'] = self.ans_types[ans_type][0]
-        right_ans['points'] = true_points
+            true_points, false_points = (1, 0) if answer.endswith('true') else (0, 1)
 
-        if true_points == 1:
-            right_ans['feedback'] = self.cor_fb
+            right_ans = {}
+            right_ans['answer_text'] = self.ans_types[ans_type][0]
+            right_ans['points'] = true_points
+
+            if true_points == 1:
+                right_ans['feedback'] = self.cor_fb
+            else:
+                right_ans['feedback'] = self.incor_fb
+
+            right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
+
+            wrong_ans = {}
+            wrong_ans['answer_text'] = self.ans_types[ans_type][1]
+            wrong_ans['points'] = false_points
+
+            if false_points == 1:
+                wrong_ans['feedback'] = self.cor_fb
+            else:
+                wrong_ans['feedback'] = self.incor_fb
+
+            wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
         else:
-            right_ans['feedback'] = self.incor_fb
+            # TODO: Improve
+            # Survey
+            right_ans = {}
+            right_ans['answer_text'] = 'Agree'
+            right_ans['points'] = 1
+            right_ans['feedback'] = ''
+            right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
 
-        right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
-
-        wrong_ans = {}
-        wrong_ans['answer_text'] = self.ans_types[ans_type][1]
-        wrong_ans['points'] = false_points
-
-        if false_points == 1:
-            wrong_ans['feedback'] = self.cor_fb
-        else:
-            wrong_ans['feedback'] = self.incor_fb
-
-        wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
+            wrong_ans = {}
+            wrong_ans['answer_text'] = 'Disagree'
+            wrong_ans['points'] = 0
+            wrong_ans['feedback'] = ''
+            wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
 
         self.answers = (right_ans, wrong_ans)
 
