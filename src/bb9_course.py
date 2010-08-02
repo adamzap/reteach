@@ -103,7 +103,7 @@ class Course(object):
 
     def convert_course_settings(self, xml):
         self.fullname = xml.find('.//TITLE').attrib['value']
-        self.shortname = self.fullname.replace(' ', '')
+        self.shortname = xml.find('.//COURSEID').attrib['value']
 
         category_elems = xml.findall('.//CLASSIFICATION')
 
