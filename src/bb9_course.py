@@ -502,8 +502,13 @@ class MultipleChoiceQuestion(Question):
 
         query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
 
-        self.cor_fb = self.xml.find(query).text
-        self.incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+        try:
+            self.cor_fb = self.xml.find(query).text
+            self.incor_fb = self.xml.find(query.replace('"c', '"inc')).text
+        except AttributeError:
+            # Survey
+            self.cor_fb = ''
+            self.incor_fb = ''
 
         self.answers = []
 
@@ -528,17 +533,26 @@ class MultipleChoiceQuestion(Question):
             self.answers.append(answer)
 
         query = './/respcondition[@title="correct"]//varequal'
-        correct_ident = self.xml.find(query).text
 
-        for answer in self.answers:
-            if answer['ident'] == correct_ident:
+        correct_elem = self.xml.find(query)
+
+        if correct_elem:
+            correct_ident = correct_elem.text
+
+            for answer in self.answers:
+                if answer['ident'] == correct_ident:
+                    answer['points'] = 1
+                    answer['feedback'] = self.cor_fb
+                else:
+                    answer['points'] = 0
+                    answer['feedback'] = self.incor_fb
+
+                answer['id'] = elixer.m_hash(answer)
+        else:
+            for answer in self.answers:
                 answer['points'] = 1
                 answer['feedback'] = self.cor_fb
-            else:
-                answer['points'] = 0
-                answer['feedback'] = self.incor_fb
-
-            answer['id'] = elixer.m_hash(answer)
+                answer['id'] = elixer.m_hash(answer)
 
 
 class EitherOrQuestion(MultipleChoiceQuestion):
