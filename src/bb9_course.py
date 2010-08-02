@@ -497,8 +497,11 @@ class TrueFalseQuestion(Question):
 
         query = './/itemfeedback[@ident="correct"]//mat_formattedtext'
 
-        self.true_feedback = self.xml.find(query).text
-        self.false_feedback = self.xml.find(query.replace('"c', '"inc')).text
+        true_fb_el = self.xml.find(query)
+        false_fb_el = self.xml.find(query.replace('"c', '"inc'))
+
+        self.true_feedback = true_fb_el.text if true_fb_el is not None else ''
+        self.false_feedback = false_fb_el.text if false_fb_el is not None else ''
 
         a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
 
