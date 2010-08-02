@@ -283,9 +283,10 @@ class StaffInfo(Resource):
         address = self.xml.find('.//ADDRESS').attrib['value']
         homepage = self.xml.find('.//HOMEPAGE').attrib['value']
         image = self.xml.find('.//IMAGE').attrib['value']
-        notes = self.xml.find('.//TEXT').text
+        notes = self.xml.find('.//TEXT').text or ''
 
-        image = elixer.fix_filename(image, self.res_num)
+        if image:
+            image = elixer.fix_filename(image, self.res_num)
 
         self.res_type = 'html'
 
@@ -305,15 +306,22 @@ class StaffInfo(Resource):
                     <li><b>Personal Link</b>: %s</li>
                   </ul>
                 </td>
+        ''' % (self.name, email, phone, hours, address, homepage)
+
+        if image:
+            self.alltext += '''
                 <td>
                   <img src = "$@FILEPHP@$/%s" alt="" width="150" height="150"/>
                 </td>
+            ''' % image
+
+        self.alltext += '''
               </tr>
               <tr>
                 <td colspan = "2">%s</td>
               </tr>
             </table>
-        ''' % (self.name, email, phone, hours, address, homepage, image, notes)
+        ''' % notes
 
         formal_title = self.xml.find('.//FORMALTITLE')
 
