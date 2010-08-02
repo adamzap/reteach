@@ -103,7 +103,12 @@ class Course(object):
         category_elems = xml.findall('.//CLASSIFICATION')
 
         self.primary_category = category_elems[0].attrib['value']
-        self.secondary_category = category_elems[1].attrib['value']
+
+        # TODO: Could be better
+        try:
+            self.secondary_category = category_elems[1].attrib['value']
+        except IndexError:
+            self.secondary_category = ''
 
     def convert_questions(self, xml, res_num):
         questions = xml.findall('.//item')
