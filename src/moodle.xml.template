@@ -148,7 +148,7 @@
       <SECTION>
         <ID>{{ section.id}}</ID>
         <NUMBER>{{ section.number }}</NUMBER>
-        <SUMMARY>{{ section.summary|escape }}</SUMMARY>
+        <SUMMARY>{{ section.summary }}</SUMMARY>
         <VISIBLE>{{ section.visible }}</VISIBLE>
         <MODS>
         {% for mod in section.mods %}
@@ -197,6 +197,7 @@
         <STAMP>{{ quiz.stamp }}</STAMP>
         <PARENT>0</PARENT>
         <SORTORDER>999</SORTORDER>
+        {% if quiz.questions %}
         <QUESTIONS>
           {% for essay_question in course.questions.essay %}
             {% if essay_question.res_num == quiz.res_num %}
@@ -204,7 +205,7 @@
             <ID>{{ essay_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ essay_question.name }}</NAME>
-            <QUESTIONTEXT>{{ essay_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXT>{{ essay_question.text }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE>{{ essay_question.image }}</IMAGE>
             <GENERALFEEDBACK></GENERALFEEDBACK>
@@ -220,9 +221,9 @@
             <ANSWERS>
               <ANSWER>
                 <ID>{{ essay_question.answer_id }}</ID>
-                <ANSWER_TEXT>{{ essay_question.feedback|escape }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ essay_question.feedback }}</ANSWER_TEXT>
                 <FRACTION>0</FRACTION>
-                <FEEDBACK>{{ essay_question.feedback|escape }}</FEEDBACK>
+                <FEEDBACK>{{ essay_question.feedback }}</FEEDBACK>
               </ANSWER>
             </ANSWERS>
           </QUESTION>
@@ -234,7 +235,7 @@
             <ID>{{ truefalse_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ truefalse_question.name }}</NAME>
-            <QUESTIONTEXT>{{ truefalse_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXT>{{ truefalse_question.text }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE>{{ truefalse_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ truefalse_question.general_feedback }}</GENERALFEEDBACK>
@@ -274,7 +275,7 @@
             <ID>{{ shortanswer_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ shortanswer_question.name }}</NAME>
-            <QUESTIONTEXT>{{ shortanswer_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXT>{{ shortanswer_question.text }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE>{{ shortanswer_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ shortanswer_question.general_feedback }}</GENERALFEEDBACK>
@@ -295,7 +296,7 @@
               {% for answer in shortanswer_question.answers %}
               <ANSWER>
                 <ID>{{ answer.id }}</ID>
-                <ANSWER_TEXT>{{ answer.answer_text|escape }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
                 <FRACTION>{{ answer.points }}</FRACTION>
                 <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
               </ANSWER>
@@ -310,7 +311,7 @@
             <ID>{{ multichoice_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ multichoice_question.name }}</NAME>
-            <QUESTIONTEXT>{{ multichoice_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXT>{{ multichoice_question.text }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE>{{ multichoice_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ multichoice_question.general_feedback }}</GENERALFEEDBACK>
@@ -337,7 +338,7 @@
               {% for answer in multichoice_question.answers %}
               <ANSWER>
                 <ID>{{ answer.id }}</ID>
-                <ANSWER_TEXT>{{ answer.answer_text|escape }}</ANSWER_TEXT>
+                <ANSWER_TEXT>{{ answer.answer_text }}</ANSWER_TEXT>
                 <FRACTION>{{ answer.points }}</FRACTION>
                 <FEEDBACK>{{ answer.feedback }}</FEEDBACK>
               </ANSWER>
@@ -352,7 +353,7 @@
             <ID>{{ matching_question.id }}</ID>
             <PARENT>0</PARENT>
             <NAME>{{ matching_question.name }}</NAME>
-            <QUESTIONTEXT>{{ matching_question.text|escape }}</QUESTIONTEXT>
+            <QUESTIONTEXT>{{ matching_question.text }}</QUESTIONTEXT>
             <QUESTIONTEXTFORMAT>1</QUESTIONTEXTFORMAT>
             <IMAGE>{{ matching_question.image }}</IMAGE>
             <GENERALFEEDBACK>{{ matching_question.general_feedback }}</GENERALFEEDBACK>
@@ -382,6 +383,7 @@
             {% endif %}
           {% endfor %}
         </QUESTIONS>
+      {% endif %}
       </QUESTION_CATEGORY>
       {% endfor %}
     </QUESTION_CATEGORIES>
@@ -393,7 +395,7 @@
         <ID>{{ quiz.id }}</ID>
         <MODTYPE>quiz</MODTYPE>
         <NAME>{{ quiz.name }}</NAME>
-        <INTRO>{{ quiz.intro|escape }}</INTRO>
+        <INTRO>{{ quiz.intro }}</INTRO>
         <TIMEOPEN>0</TIMEOPEN>
         <TIMECLOSE>0</TIMECLOSE>
         <OPTIONFLAGS>1</OPTIONFLAGS>
@@ -445,7 +447,7 @@
         <MODTYPE>forum</MODTYPE>
         <TYPE>general</TYPE>
         <NAME>{{ forum.name }}</NAME>
-        <INTRO>{{ forum.introduction|escape }}</INTRO>
+        <INTRO>{{ forum.introduction }}</INTRO>
         <ASSESSED>0</ASSESSED>
         <ASSESSTIMESTART>0</ASSESSTIMESTART>
         <ASSESSTIMEFINISH>0</ASSESSTIMEFINISH>
@@ -466,7 +468,7 @@
         <ID>{{ label.id }}</ID>
         <MODTYPE>label</MODTYPE>
         <NAME>{{ label.name }}</NAME>
-        <CONTENT>{{ label.content|escape }}</CONTENT>
+        <CONTENT>{{ label.content }}</CONTENT>
         <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
       </MOD>
       {% endfor %}
@@ -476,9 +478,9 @@
         <MODTYPE>resource</MODTYPE>
         <NAME>{{ resource.name }}</NAME>
         <TYPE>{{ resource.res_type }}</TYPE>
-        <REFERENCE>{{ resource.reference|escape }}</REFERENCE>
-        <SUMMARY>{{ resource.summary|escape }}</SUMMARY>
-        <ALLTEXT>{{ resource.alltext|escape }}</ALLTEXT>
+        <REFERENCE>{{ resource.reference }}</REFERENCE>
+        <SUMMARY>{{ resource.summary }}</SUMMARY>
+        <ALLTEXT>{{ resource.alltext }}</ALLTEXT>
         <POPUP></POPUP>
         <OPTIONS></OPTIONS>
         <TIMEMODIFIED>{{ course.timestamp }}</TIMEMODIFIED>
