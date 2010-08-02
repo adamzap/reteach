@@ -549,7 +549,7 @@ class MultipleChoiceQuestion(Question):
 
         correct_elem = self.xml.find(query)
 
-        if correct_elem:
+        if correct_elem is not None:
             correct_ident = correct_elem.text
 
             for answer in self.answers:
