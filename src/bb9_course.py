@@ -730,9 +730,13 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
             moodle_fname = bb_fname
 
             if bb_fname.startswith('!'):
-                ext, fname = [s[::-1] for s in bb_fname[1:][::-1].split('.', 1)]
+                if '.' in bb_fname:
+                    ext, fname = [s[::-1] for s in bb_fname[1:][::-1].split('.', 1)]
+                    moodle_fname = (base64.b16decode(fname.upper()) + '.' + ext)
+                else:
+                    ext, fname = '', bb_fname[1:]
+                    moodle_fname = (base64.b16decode(fname.upper()))
 
-                moodle_fname = (base64.b16decode(fname.upper()) + '.' + ext)
                 moodle_fname = urllib2.unquote(moodle_fname)
 
             res_num = root.split(os.sep, 1)[1].split(os.sep)[0].replace('res', '')
