@@ -186,6 +186,9 @@ class Course(object):
             res_nums_to_assets[asset.res_num] = asset
 
         for content_area in self.manifest.find('.//organization').iterchildren():
+            if len(content_area.getchildren()) < 2:
+                continue
+
             section_num = len(self.sections) + len(sections)
 
             # Avoiding staffinfo
