@@ -64,7 +64,12 @@ class Course(object):
     def convert_resources(self):
         for resource in self.manifest.iterfind('.//resource'):
             dat_name = resource.attrib['file']
-            xml = etree.parse(self.zip.open(dat_name))
+
+            # TODO: Replace with a check in self.zip.namelist?
+            try:
+                xml = etree.parse(self.zip.open(dat_name))
+            except KeyError:
+                continue
 
             res_num = dat_name.replace('res', '').replace('.dat', '')
 
