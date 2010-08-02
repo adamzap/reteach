@@ -503,12 +503,24 @@ class TrueFalseQuestion(Question):
         self.true_feedback = true_fb_el.text if true_fb_el is not None else ''
         self.false_feedback = false_fb_el.text if false_fb_el is not None else ''
 
-        a = self.xml.find('.//respcondition[@title="correct"]//varequal').text
+        answer_query = './/respcondition[@title="correct"]//varequal'
 
-        self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
+        answer_elem = self.xml.find(answer_query)
 
-        self.true_answer_id = elixer.m_hash(self, self.true_points)
-        self.false_answer_id = elixer.m_hash(self, self.false_points)
+        if answer_elem is not None:
+            a = answer_elem.text
+
+            self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
+
+            self.true_answer_id = elixer.m_hash(self, self.true_points)
+            self.false_answer_id = elixer.m_hash(self, self.false_points)
+        else:
+            # Survey
+            # TODO: Make this multichoice
+            self.true_points, self.false_points = (1, 0)
+
+            self.true_answer_id = elixer.m_hash(self, self.true_points)
+            self.false_answer_id = elixer.m_hash(self, self.false_points)
 
 
 class MultipleChoiceQuestion(Question):
