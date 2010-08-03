@@ -467,6 +467,9 @@ class Question(ContentItem):
 
         ContentItem.__init__(self, xml)
 
+        if not self.name:
+            self.name = '________'
+
         self.name = re.sub(r'<.*?>', '', self.name).strip()
         self.res_num = res_num
 
