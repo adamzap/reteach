@@ -1,0 +1,10 @@
+- Add folder support to command line tool
+- Fix and test survey questions
+- Customize Sphinx theme
+- Investigate py2app and py2exe
+  - Drag and drop
+  - Foler support
+- Documentation
+  - Blackboard / Moodle equivalents
+  - What will convert, what won't
+  - Course object spec
