@@ -1,8 +1,6 @@
-import sys
 import string
 import jinja2
 import random
-import zipfile
 import datetime
 
 def m_hash(*args):
