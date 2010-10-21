@@ -9,7 +9,7 @@ import subprocess
 
 from lxml import etree
 
-import elixer
+import utils
 
 class Course(object):
     def __init__(self, archive_filename):
@@ -41,8 +41,8 @@ class Course(object):
         self.sections = self.create_default_sections()
         self.sections += self.create_content_areas()
 
-        self.quiz_category_stamp = elixer.generate_stamp()
-        self.quiz_category_id = elixer.m_hash(self.quiz_category_stamp)
+        self.quiz_category_stamp = utils.generate_stamp()
+        self.quiz_category_id = utils.m_hash(self.quiz_category_stamp)
 
         self.has_questions = any(self.questions.values())
 
@@ -261,8 +261,8 @@ class Resource(ContentItem):
 
         ContentItem.__init__(self, xml)
 
-        self.id = elixer.m_hash(self)
-        self.section_id = elixer.m_hash(self)
+        self.id = utils.m_hash(self)
+        self.section_id = utils.m_hash(self)
 
 
 class DiscussionBoard(Resource):
@@ -299,7 +299,7 @@ class StaffInfo(Resource):
         notes = self.xml.find('.//TEXT').text or ''
 
         if image:
-            image = elixer.fix_filename(image, self.res_num)
+            image = utils.fix_filename(image, self.res_num)
 
         self.res_type = 'html'
 
@@ -386,7 +386,7 @@ class Document(Resource):
     def handle_file(self, file_elem):
         orig_name = file_elem.find('.//NAME').text
 
-        fixed_name = elixer.fix_filename(orig_name, self.res_num)
+        fixed_name = utils.fix_filename(orig_name, self.res_num)
 
         fname = urllib2.quote(fixed_name.encode('utf-8'))
 
@@ -404,7 +404,7 @@ class Document(Resource):
 
         after = '"' + after
 
-        filename = elixer.fix_filename(filename, self.res_num)
+        filename = utils.fix_filename(filename, self.res_num)
 
         return before + '$@FILEPHP@$/' + filename + after
 
@@ -414,8 +414,8 @@ class Label(Resource):
         self.name = self.content = name
         self.res_num = res_num
 
-        self.id = elixer.m_hash(self)
-        self.section_id = elixer.m_hash(self)
+        self.id = utils.m_hash(self)
+        self.section_id = utils.m_hash(self)
 
         self.type = 'label'
 
@@ -426,15 +426,15 @@ class Test(Resource):
 
         self.questions = quiz_questions
         self.question_string = ','.join([str(q.id) for q in self.questions])
-        self.feedback_id = elixer.m_hash(self)
+        self.feedback_id = utils.m_hash(self)
 
 
     def _load(self):
         self.name = self.xml.find('.//assessment').attrib['title']
 
-        self.stamp = elixer.generate_stamp()
+        self.stamp = utils.generate_stamp()
 
-        self.category_id = elixer.m_hash(self.name, self.stamp)
+        self.category_id = utils.m_hash(self.name, self.stamp)
 
         query = './/presentation_material//mat_formattedtext'
         description = self.xml.find(query).text
@@ -476,17 +476,17 @@ class Question(ContentItem):
         query = './/flow[@class="FILE_BLOCK"]//matapplication'
 
         for elem in self.xml.findall(query):
-            self.image = elixer.fix_filename(elem.attrib['label'], res_num)
+            self.image = utils.fix_filename(elem.attrib['label'], res_num)
 
-        self.stamp = elixer.generate_stamp()
-        self.id = elixer.m_hash(self)
+        self.stamp = utils.generate_stamp()
+        self.id = utils.m_hash(self)
 
 
 class EssayQuestion(Question):
     def _load(self):
         self.name = self.xml.find('.//presentation//mat_formattedtext').text
         self.text = self.name
-        self.answer_id = elixer.m_hash(self)
+        self.answer_id = utils.m_hash(self)
 
 
 class ShortResponseQuestion(EssayQuestion):
@@ -515,15 +515,15 @@ class TrueFalseQuestion(Question):
 
             self.true_points, self.false_points = (1, 0) if a == 'true' else (0, 1)
 
-            self.true_answer_id = elixer.m_hash(self, self.true_points)
-            self.false_answer_id = elixer.m_hash(self, self.false_points)
+            self.true_answer_id = utils.m_hash(self, self.true_points)
+            self.false_answer_id = utils.m_hash(self, self.false_points)
         else:
             # Survey
             # TODO: Make this multichoice
             self.true_points, self.false_points = (1, 0)
 
-            self.true_answer_id = elixer.m_hash(self, self.true_points)
-            self.false_answer_id = elixer.m_hash(self, self.false_points)
+            self.true_answer_id = utils.m_hash(self, self.true_points)
+            self.false_answer_id = utils.m_hash(self, self.false_points)
 
 
 class MultipleChoiceQuestion(Question):
@@ -578,12 +578,12 @@ class MultipleChoiceQuestion(Question):
                     answer['points'] = 0
                     answer['feedback'] = self.incor_fb
 
-                answer['id'] = elixer.m_hash(answer)
+                answer['id'] = utils.m_hash(answer)
         else:
             for answer in self.answers:
                 answer['points'] = 1
                 answer['feedback'] = self.cor_fb
-                answer['id'] = elixer.m_hash(answer)
+                answer['id'] = utils.m_hash(answer)
 
 
 class EitherOrQuestion(MultipleChoiceQuestion):
@@ -616,7 +616,7 @@ class EitherOrQuestion(MultipleChoiceQuestion):
             else:
                 right_ans['feedback'] = self.incor_fb
 
-            right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
+            right_ans['id'] = utils.m_hash(right_ans) # Fix m_hash
 
             wrong_ans = {}
             wrong_ans['answer_text'] = self.ans_types[ans_type][1]
@@ -627,7 +627,7 @@ class EitherOrQuestion(MultipleChoiceQuestion):
             else:
                 wrong_ans['feedback'] = self.incor_fb
 
-            wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
+            wrong_ans['id'] = utils.m_hash(wrong_ans) # Fix_mhash
         else:
             # TODO: Improve
             # Survey
@@ -635,13 +635,13 @@ class EitherOrQuestion(MultipleChoiceQuestion):
             right_ans['answer_text'] = 'Agree'
             right_ans['points'] = 1
             right_ans['feedback'] = ''
-            right_ans['id'] = elixer.m_hash(right_ans) # Fix m_hash
+            right_ans['id'] = utils.m_hash(right_ans) # Fix m_hash
 
             wrong_ans = {}
             wrong_ans['answer_text'] = 'Disagree'
             wrong_ans['points'] = 0
             wrong_ans['feedback'] = ''
-            wrong_ans['id'] = elixer.m_hash(wrong_ans) # Fix_mhash
+            wrong_ans['id'] = utils.m_hash(wrong_ans) # Fix_mhash
 
         self.answers = (right_ans, wrong_ans)
 
@@ -673,7 +673,7 @@ class MultipleAnswerQuestion(MultipleChoiceQuestion):
                 answer['points'] = 0
                 answer['feedback'] = self.incor_fb
 
-            answer['id'] = elixer.m_hash(answer)
+            answer['id'] = utils.m_hash(answer)
 
 
 class OpinionScaleQuestion(MultipleChoiceQuestion):
@@ -721,7 +721,7 @@ class MatchingQuestion(Question):
                     break
 
         for answer in self.answers:
-            answer['id'] = elixer.m_hash(answer)
+            answer['id'] = utils.m_hash(answer)
 
 
 class OrderingQuestion(Question):
@@ -751,7 +751,7 @@ class OrderingQuestion(Question):
                     break
 
         for answer in self.answers:
-            answer['id'] = elixer.m_hash(answer)
+            answer['id'] = utils.m_hash(answer)
 
 
 class FillInTheBlankQuestion(Question):
@@ -765,7 +765,7 @@ class FillInTheBlankQuestion(Question):
             answer = {}
             answer['answer_text'] = answer_text
             answer['points'] = 1
-            answer['id'] = elixer.m_hash(answer)
+            answer['id'] = utils.m_hash(answer)
 
             self.answers.append(answer)
 
@@ -781,7 +781,7 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
 
     moodle_zip = zipfile.ZipFile(out_name, 'w')
 
-    moodle_xml_str = elixer.convert(course).encode('utf-8')
+    moodle_xml_str = utils.convert(course).encode('utf-8')
 
     moodle_zip.writestr('moodle.xml', moodle_xml_str)
 
@@ -812,7 +812,7 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
 
             res_num = root.split(os.sep, 1)[1].split(os.sep)[0].replace('res', '')
 
-            fixed_filename = elixer.fix_filename(moodle_fname, res_num)
+            fixed_filename = utils.fix_filename(moodle_fname, res_num)
 
             bb_fname = os.path.join(root, bb_fname)
 

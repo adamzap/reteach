@@ -1,9 +1,7 @@
 import time
 import random
 
-import elixer
-
-from elixer import m_hash, generate_stamp
+from utils import m_hash, generate_stamp, create_moodle_zip
 
 class TestCourse(object):
     def __init__(self):
@@ -284,4 +282,4 @@ class QuizTestCourse(TestCourse):
 if __name__ == '__main__':
     course = FullTestCourse()
 
-    elixer.create_moodle_zip(course, 'out.zip')
+    create_moodle_zip(course, 'out.zip')
