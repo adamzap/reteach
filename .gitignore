@@ -1,3 +1,4 @@
 *.pyc
 moodle.xml
 *.zip
+build
