@@ -4,15 +4,7 @@ Exporting From Blackboard
 Before converting a course with Reteach, you must export it from Blackboard in
 the correct format.
 
-Screencast
-----------
-
-[youtube embed]
-
-Directions
-----------
-
-Navigate to the course you want to export
+First, navigate to the course you want to export
 
 Locate the Course Management Control Panel.
 
@@ -23,7 +15,7 @@ Locate the Course Management Control Panel.
    If you do not have access to the Course Management Control Panel, contact
    you system administrator.
 
-First click on Packages and Utilites, then click on Export/Archive Course.
+Click on Packages and Utilites, then click on Export/Archive Course.
 
 .. image:: _static/export_menu.png
 

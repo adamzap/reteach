@@ -16,7 +16,7 @@ User's Guide
    :maxdepth: 2
 
    exporting_from_blackboard
-   basic_usage
+   command_line_tool
 
 Developer's Guide
 =================
