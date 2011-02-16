@@ -823,15 +823,3 @@ def create_moodle_zip(blackboard_zip_fname, out_name):
     shutil.rmtree('elixer_tmp')
 
     moodle_zip.close()
-
-if __name__ == '__main__':
-    import sys
-
-    if len(sys.argv) == 1:
-        blackboard_zip_name, moodle_zip_name = 'in.zip', 'out.zip'
-    elif len(sys.argv) == 2:
-        blackboard_zip_name, moodle_zip_name = sys.argv[1], 'out.zip'
-    elif len(sys.argv) == 3:
-        blackboard_zip_name, moodle_zip_name = sys.argv[1], sys.argv[2]
-
-    create_moodle_zip(blackboard_zip_name, moodle_zip_name)
