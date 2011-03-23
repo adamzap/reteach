@@ -3,6 +3,7 @@
 # This file is part of Reteach
 # Reteach is free software licensed under the GPLv3. See LICENSE for details.
 
+import os
 import string
 import jinja2
 import random
@@ -45,7 +46,9 @@ def fix_filename(filename, res_num):
     return (ext + '.' + res_num[::-1] + '_' + name)[::-1]
 
 def convert(course):
-    template_content = open('moodle.xml.template').read()
+    tmpl_path = os.path.join(os.path.dirname(__file__), 'moodle.xml.template')
+
+    template_content = open(tmpl_path).read()
 
     xml_template = jinja2.Template(template_content, autoescape=True)
 
