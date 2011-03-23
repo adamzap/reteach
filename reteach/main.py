@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# Copyright 2011 Adam Zapletal
+#
+# This file is part of Reteach
+# Reteach is free software licensed under the GPLv3. See LICENSE for details.
+
 import os
 import sys
 import optparse
