@@ -21,9 +21,6 @@ For instance, a forum's id will be used multiple content items: the course
 section where the forum exists and in the forum's settings. The `id` property
 must be consistent throughout.
 
-This is an annotated list of properties. For a more raw view of this object's
-structure, see :ref:`raw_course_object_spec`.
-
 General Properties
 ------------------
 
